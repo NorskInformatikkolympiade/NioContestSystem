@@ -1,0 +1,40 @@
+#{extends 'main.html' /}
+#{set title:'Oppgave ' + task.number + ': ' + task.title /}
+
+<h1>Oppgave ${task.number}: ${task.title}</h1>
+
+<h2>Besvarelser</h2>
+<table>
+	<tr>
+		<th>Tidspunkt</th>
+		<th>Deltager</th>
+		<th>Status</th>
+		<th>Poeng</th>
+	</tr>
+	#{list items: task.submissions, as: 'submission'}
+		<tr>
+			<td>${submission.submittedAt}</td>
+			<td>${submission.user.firstName} ${submission.user.lastName}</td>
+			<td>${submission.status}</td>
+			<td>${submission.score}</td>
+		</tr>
+	#{/list}
+</table>
+
+<h2>Datasett</h2>
+<table>
+	<tr>
+		<th>Nr.</th>
+		<th>Vekt</th>
+		<th>Inputfil</th>
+		<th>Outputfil</th>
+	</tr>
+	#{list items: task.dataSets, as: 'dataSet'}
+		<tr>
+			<td>${dataSet.number}</td>
+			<td>${dataSet.weight}</td>
+			<td>${dataSet.inputFileName}</td>
+			<td>${dataSet.outputFileName}</td>
+		</tr>
+	#{/list}
+</table>

@@ -5,18 +5,83 @@ Task(heisaturen):
     number: 1
     title: Heisaturen
     weight: 50
+    dataSetPath: /home/nio/heis/data
 
 Task(kast):
     number: 2
     title: Skrått kast med luftmostand
     weight: 100
+    dataSetPath: /home/nio/kast/data
 
 Task(banana):
     number: 3
     title: Banana Republic
     weight: 100
+    dataSetPath: /home/nio/br/sets
 
 Task(thailand):
     number: 4
     title: Thailand
     weight: 200
+    dataSetPath: /home/nio/thailand
+
+User(aasmund):
+    firstName: Åsmund
+    lastName: Eldhuset
+    isParticipant: true
+    isAdmin: true
+
+User(geir):
+    firstName: Geir K.
+    lastName: Engdahl
+    isParticipant: false
+    isAdmin: true
+
+User(fredrik):
+    firstName: Fredrik
+    lastName: Carlsen
+    isParticipant: true
+    isAdmin: false
+
+DataSet(t1d1):
+    task: heisaturen 
+    number: 1
+    weight: 10
+
+DataSet(t1d2):
+    task: heisaturen 
+    number: 2
+    weight: 10
+
+DataSet(t1d3):
+    task: heisaturen 
+    number: 3
+    weight: 20
+
+Submission(t1u1s1):
+    task: heisaturen
+    user: aasmund
+    submittedAt: 2012-02-21 13:52:35
+    status: COMPLETED
+    score: 59
+
+Submission(t1u1s2):
+    task: heisaturen
+    user: aasmund
+    submittedAt: 2012-02-21 16:18:08
+    status: QUEUED
+    score: 0
+
+Submission(t1u3s1):
+    task: heisaturen
+    user: fredrik
+    submittedAt: 2012-02-21 12:00:00
+    status: QUEUED
+    score: 0
+
+Submission(t1u3s1):
+    task: thailand
+    user: fredrik
+    submittedAt: 2012-02-21 13:01:59
+    status: COMPLETED
+    score: 34
