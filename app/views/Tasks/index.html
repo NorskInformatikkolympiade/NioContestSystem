@@ -1,0 +1,17 @@
+#{extends 'main.html' /}
+#{set title:'Oppgaver' /}
+
+<table>
+	<tr>
+		<th>Nr.</th>
+		<th>Tittel</th>
+		<th>Poeng</th>
+	</tr>
+	#{list items: tasks, as: 'task'}
+		<tr>
+			<td>${task.number}</td>
+			<td>${task.title}</td>
+			<td>${task.weight}</td>
+		</tr>
+	#{/list}
+</table>

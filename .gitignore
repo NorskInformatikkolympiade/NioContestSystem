@@ -2,3 +2,4 @@
 bin
 *.stackdump
 tmp
+test-result

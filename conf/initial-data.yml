@@ -1,0 +1,22 @@
+# you describe your data using the YAML notation here
+# and then load them using Fixtures.load("data.yml")
+
+Task(heisaturen):
+    number: 1
+    title: Heisaturen
+    weight: 50
+
+Task(kast):
+    number: 2
+    title: Skrått kast med luftmostand
+    weight: 100
+
+Task(banana):
+    number: 3
+    title: Banana Republic
+    weight: 100
+
+Task(thailand):
+    number: 4
+    title: Thailand
+    weight: 200
