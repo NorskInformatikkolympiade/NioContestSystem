@@ -13,9 +13,9 @@ public class TaskTest extends UnitTest {
 	
     @Test
     public void getAllShouldReturnAllTasksSortedByNumber() {
-        new Task(3, "Banana Republic", 100).save();
-        new Task(1, "Heisaturen", 50).save();
-        new Task(2, "Hei på deg", 200).save();
+        new Task(3, "Banana Republic", 100, "").save();
+        new Task(1, "Heisaturen", 50, "").save();
+        new Task(2, "Hei på deg", 200, "").save();
         
         List<Task> tasks = Task.getAll();
         assertEquals(3, tasks.size());

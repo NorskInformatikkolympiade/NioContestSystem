@@ -29,4 +29,14 @@ public class User extends Model {
 	public static List<User> getAll() {
 		return User.findAll();
 	}
+	
+	public int getScoreForTask(Long taskId) {
+		List<Submission> submissions = Submission.find("user.id = ? and task.id = ?", id, taskId).fetch();
+		int maxScore = 0;
+		for (Submission submission : submissions) {
+			if (submission.score > maxScore)
+				maxScore = submission.score;
+		}
+		return maxScore;
+	}
 }
