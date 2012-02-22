@@ -14,7 +14,7 @@
 	#{list items: task.submissions, as: 'submission'}
 		<tr>
 			<td>${submission.submittedAt}</td>
-			<td>${submission.user.firstName} ${submission.user.lastName}</td>
+			<td>${submission.contestant.firstName} ${submission.contestant.lastName}</td>
 			<td>${submission.status}</td>
 			<td>${submission.score}</td>
 		</tr>
