@@ -64,6 +64,7 @@ public class Contestant extends Model {
 			entry.score = contestant.getTotalScore();
 			scoreboard.add(entry);
 		}
+		
 		Collections.sort(scoreboard, new Comparator<ScoreboardEntry>() {
 			public int compare(ScoreboardEntry a, ScoreboardEntry b) {
 				if (a.score > b.score)
@@ -73,8 +74,15 @@ public class Contestant extends Model {
 				return a.name.compareTo(b.name);
 			}
 		});
-		for (int i = 0; i < scoreboard.size(); ++i)
-			scoreboard.get(i).position = i + 1;
+		
+		int position = 1;
+		for (int i = 0; i < scoreboard.size(); ++i) {
+			// Handle ties by assigning the same position value to contestants with equal score, and skipping over the corresponding amount of position numbers
+			if (i > 0 && scoreboard.get(i).score != scoreboard.get(i - 1).score)
+				position = i + 1;
+			scoreboard.get(i).position = position;
+		}
+		
 		return scoreboard;
 	}
 }

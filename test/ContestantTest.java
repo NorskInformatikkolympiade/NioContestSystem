@@ -122,7 +122,47 @@ public class ContestantTest extends UnitTest {
         assertScoreboardEntry(scoreboard.get(2), 3, contestantThree.id, "Lars Nilsen", 5);
     }
     
-    //TODO: Ties
+    @Test
+    public void getScoreboardShouldGiveEqualPositionNumbersToTiedContestantsAndOrderThemByNameAndSkipPositionNumbers() {
+    	Task task = new Task(1, "Banana Republic", 100, "").save();
+        Contestant contestantOne = new Contestant("Ola", "Nordmann", true, false).save();
+        Contestant contestantTwo = new Contestant("Per", "Hansen", true, false).save();
+        Contestant contestantThree = new Contestant("Lars", "Nilsen", true, false).save();
+        Contestant contestantFour = new Contestant("Henrik", "Olsen", true, false).save();
+        Contestant contestantFive = new Contestant("Andreas", "Larsen", true, false).save();
+        TestData.AddSubmissions(contestantOne, task, 42);
+        TestData.AddSubmissions(contestantTwo, task, 10);
+        TestData.AddSubmissions(contestantThree, task, 42);
+        TestData.AddSubmissions(contestantFour, task, 98);
+        TestData.AddSubmissions(contestantFive, task, 42);
+        
+        List<ScoreboardEntry> scoreboard = Contestant.getScoreboard();
+        
+        assertEquals(5, scoreboard.size());
+        assertScoreboardEntry(scoreboard.get(0), 1, contestantFour.id, "Henrik Olsen", 98);
+        assertScoreboardEntry(scoreboard.get(1), 2, contestantFive.id, "Andreas Larsen", 42);
+        assertScoreboardEntry(scoreboard.get(2), 2, contestantThree.id, "Lars Nilsen", 42);
+        assertScoreboardEntry(scoreboard.get(3), 2, contestantOne.id, "Ola Nordmann", 42);
+        assertScoreboardEntry(scoreboard.get(4), 5, contestantTwo.id, "Per Hansen", 10);
+    }
+    
+    @Test
+    public void getScoreboardShouldGiveFirstPlaceToEverybodyWhenAllScoresAreEqual() {
+    	Task task = new Task(1, "Banana Republic", 100, "").save();
+        Contestant contestantOne = new Contestant("Ola", "Nordmann", true, false).save();
+        Contestant contestantTwo = new Contestant("Per", "Hansen", true, false).save();
+        Contestant contestantThree = new Contestant("Lars", "Nilsen", true, false).save();
+        TestData.AddSubmissions(contestantOne, task, 8);
+        TestData.AddSubmissions(contestantTwo, task, 8);
+        TestData.AddSubmissions(contestantThree, task, 8);
+        
+        List<ScoreboardEntry> scoreboard = Contestant.getScoreboard();
+        
+        assertEquals(3, scoreboard.size());
+        assertScoreboardEntry(scoreboard.get(0), 1, contestantThree.id, "Lars Nilsen", 8);
+        assertScoreboardEntry(scoreboard.get(1), 1, contestantOne.id, "Ola Nordmann", 8);
+        assertScoreboardEntry(scoreboard.get(2), 1, contestantTwo.id, "Per Hansen", 8);
+    }
     
     private void assertScoreboardEntry(ScoreboardEntry actual, long expectedPosition, long expectedContestantId, String expectedName, int expectedScore) {
     	assertEquals(expectedPosition, actual.position);
