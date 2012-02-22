@@ -1,6 +1,8 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -9,6 +11,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import play.db.jpa.Model;
+import viewmodels.ScoreboardEntry;
 
 @Entity
 public class Contestant extends Model {
@@ -25,6 +28,10 @@ public class Contestant extends Model {
 		this.lastName = lastName;
 		this.isParticipant = isParticipant;
 		this.isAdmin = isAdmin;
+	}
+	
+	public String getFullName() {
+		return firstName + " " + lastName;
 	}
 	
 	public static List<Contestant> getAll() {
@@ -46,5 +53,28 @@ public class Contestant extends Model {
 		for (Task task : Task.getAll())
 			totalScore += getScoreForTask(task.id);
 		return totalScore;
+	}
+	
+	public static List<ScoreboardEntry> getScoreboard() {
+		List<ScoreboardEntry> scoreboard = new ArrayList<ScoreboardEntry>();
+		for (Contestant contestant : Contestant.getAll()) {
+			ScoreboardEntry entry = new ScoreboardEntry();
+			entry.contestantId = contestant.id;
+			entry.name = contestant.getFullName();
+			entry.score = contestant.getTotalScore();
+			scoreboard.add(entry);
+		}
+		Collections.sort(scoreboard, new Comparator<ScoreboardEntry>() {
+			public int compare(ScoreboardEntry a, ScoreboardEntry b) {
+				if (a.score > b.score)
+					return -1;
+				else if (a.score < b.score)
+					return 1;
+				return a.name.compareTo(b.name);
+			}
+		});
+		for (int i = 0; i < scoreboard.size(); ++i)
+			scoreboard.get(i).position = i + 1;
+		return scoreboard;
 	}
 }

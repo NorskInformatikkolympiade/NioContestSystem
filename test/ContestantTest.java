@@ -3,6 +3,7 @@ import java.util.*;
 
 import play.db.jpa.Transactional;
 import play.test.*;
+import viewmodels.ScoreboardEntry;
 import models.*;
 
 public class ContestantTest extends UnitTest {
@@ -98,5 +99,35 @@ public class ContestantTest extends UnitTest {
         int score = contestant.getTotalScore();
         
         assertEquals(115, score);
+    }
+    
+    @Test
+    public void getScoreboardShouldReturnAllContestantsOrderedByTotalScore() {
+    	Task taskOne = new Task(1, "Banana Republic", 100, "").save();
+        Task taskTwo = new Task(2, "Banana Republic", 50, "").save();
+        Contestant contestantOne = new Contestant("Ola", "Nordmann", true, false).save();
+        Contestant contestantTwo = new Contestant("Per", "Hansen", true, false).save();
+        Contestant contestantThree = new Contestant("Lars", "Nilsen", true, false).save();
+        TestData.AddSubmissions(contestantOne, taskOne, 2, 29, 28);
+        TestData.AddSubmissions(contestantOne, taskTwo, 50, 23, 0);
+        TestData.AddSubmissions(contestantTwo, taskOne, 20, 99);
+        TestData.AddSubmissions(contestantTwo, taskTwo, 0, 0, 0);
+        TestData.AddSubmissions(contestantThree, taskOne, 1, 2, 3, 4, 0, 5, 0);
+        
+        List<ScoreboardEntry> scoreboard = Contestant.getScoreboard();
+        
+        assertEquals(3, scoreboard.size());
+        assertScoreboardEntry(scoreboard.get(0), 1, contestantTwo.id, "Per Hansen", 99);
+        assertScoreboardEntry(scoreboard.get(1), 2, contestantOne.id, "Ola Nordmann", 79);
+        assertScoreboardEntry(scoreboard.get(2), 3, contestantThree.id, "Lars Nilsen", 5);
+    }
+    
+    //TODO: Ties
+    
+    private void assertScoreboardEntry(ScoreboardEntry actual, long expectedPosition, long expectedContestantId, String expectedName, int expectedScore) {
+    	assertEquals(expectedPosition, actual.position);
+        assertEquals(expectedContestantId, actual.contestantId);
+        assertEquals(expectedName, actual.name);
+        assertEquals(expectedScore, actual.score);
     }
 }

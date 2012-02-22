@@ -1,0 +1,19 @@
+#{extends 'main.html' /}
+#{set title:'Resultatliste' /}
+
+<h1>Resultatliste</h1>
+
+<table>
+	<tr>
+		<th>Nr.</th>
+		<th>Navn</th>
+		<th>Poeng</th>
+	</tr>
+	#{list items: scoreboard, as: 'entry'}
+		<tr>
+			<td>${entry.position}</td>
+			<td><a href="@{Contestants.show(entry.contestantId)}">${entry.name}</a></td>
+			<td>${entry.score}</td>
+		</tr>
+	#{/list}
+</table>

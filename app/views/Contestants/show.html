@@ -1,0 +1,24 @@
+#{extends 'main.html' /}
+#{set title:'Deltager: ' + contestant.getFullName() /}
+
+<h1>Deltager: ${contestant.getFullName()}</h1>
+
+<p>Poengsum: ${contestant.getTotalScore()}</p>
+
+<h2>Besvarelser</h2>
+<table>
+	<tr>
+		<th>Tidspunkt</th>
+		<th>Oppgave</th>
+		<th>Status</th>
+		<th>Poeng</th>
+	</tr>
+	#{list items: contestant.submissions, as: 'submission'}
+		<tr>
+			<td>${submission.submittedAt}</td>
+			<td>${submission.task.title}</td>
+			<td>${submission.status}</td>
+			<td>${submission.score}</td>
+		</tr>
+	#{/list}
+</table>
