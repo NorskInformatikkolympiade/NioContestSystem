@@ -40,4 +40,11 @@ public class Contestant extends Model {
 		}
 		return maxScore;
 	}
+
+	public int getTotalScore() {
+		int totalScore = 0;
+		for (Task task : Task.getAll())
+			totalScore += getScoreForTask(task.id);
+		return totalScore;
+	}
 }
