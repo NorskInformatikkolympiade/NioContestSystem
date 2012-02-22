@@ -25,19 +25,19 @@ Task(thailand):
     weight: 200
     dataSetPath: /home/nio/thailand
 
-User(aasmund):
+Contestant(aasmund):
     firstName: Åsmund
     lastName: Eldhuset
     isParticipant: true
     isAdmin: true
 
-User(geir):
+Contestant(geir):
     firstName: Geir K.
     lastName: Engdahl
     isParticipant: false
     isAdmin: true
 
-User(fredrik):
+Contestant(fredrik):
     firstName: Fredrik
     lastName: Carlsen
     isParticipant: true
@@ -60,28 +60,28 @@ DataSet(t1d3):
 
 Submission(t1u1s1):
     task: heisaturen
-    user: aasmund
+    contestant: aasmund
     submittedAt: 2012-02-21 13:52:35
     status: COMPLETED
     score: 59
 
 Submission(t1u1s2):
     task: heisaturen
-    user: aasmund
+    contestant: aasmund
     submittedAt: 2012-02-21 16:18:08
     status: QUEUED
     score: 0
 
 Submission(t1u3s1):
     task: heisaturen
-    user: fredrik
+    contestant: fredrik
     submittedAt: 2012-02-21 12:00:00
     status: QUEUED
     score: 0
 
 Submission(t1u3s1):
     task: thailand
-    user: fredrik
+    contestant: fredrik
     submittedAt: 2012-02-21 13:01:59
     status: COMPLETED
     score: 34

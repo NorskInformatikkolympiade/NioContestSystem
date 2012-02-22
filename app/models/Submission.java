@@ -12,7 +12,7 @@ import play.db.jpa.Model;
 @Entity
 public class Submission extends Model {
 	@ManyToOne(optional = false)
-	public User user;
+	public Contestant contestant;
 	
 	@ManyToOne(optional = false)
 	public Task task;
@@ -26,8 +26,8 @@ public class Submission extends Model {
 	public SubmissionStatus status;
 	public int score;
 	
-	public Submission(User user, Task task, String sourceCode, Language language, Date submittedAt, SubmissionStatus status, int score) {
-		this.user = user;
+	public Submission(Contestant contestant, Task task, String sourceCode, Language language, Date submittedAt, SubmissionStatus status, int score) {
+		this.contestant = contestant;
 		this.task = task;
 		this.sourceCode = sourceCode;
 		this.language = language;
