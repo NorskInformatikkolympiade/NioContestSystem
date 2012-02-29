@@ -54,21 +54,38 @@ public class Grader extends Job implements Runnable {
 				"  User:         " + submission.contestant.getFullName() + "\n" +
 				"  Task:         " + submission.task.title + "\n" +
 				"  Submitted at: " + submission.submittedAt);
-		JPA.em().getTransaction().begin();
-		submission.status = SubmissionStatus.RUNNING;
-		submission.save();
-		JPA.em().flush();
-		JPA.em().getTransaction().commit();
+		
+		try {
+			JPA.em().getTransaction().begin();
+			submission.status = SubmissionStatus.RUNNING;
+			submission.save();
+			JPA.em().flush();
+			JPA.em().getTransaction().commit();
+		}
+		catch (Exception e) {
+			System.out.println("Error occurred when trying to set task status to RUNNING: " + e);
+			JPA.em().getTransaction().rollback();
+			return;
+		}
+		
 		try {
 			Thread.sleep(5000);
 		}
 		catch (InterruptedException e) {}
-		JPA.em().getTransaction().begin();
-		submission.status = SubmissionStatus.COMPLETED;
-		submission.score = (int)(Math.random() * 101);
-		submission.save();
-		JPA.em().flush();
-		JPA.em().getTransaction().commit();
+		
+		try {
+			JPA.em().getTransaction().begin();
+			submission.status = SubmissionStatus.COMPLETED;
+			submission.score = (int)(Math.random() * 101);
+			submission.save();
+			JPA.em().flush();
+			JPA.em().getTransaction().commit();
+		}
+		catch (Exception e) {
+			System.out.println("Error occurred when trying to set task status to COMPLETED: " + e);
+			JPA.em().getTransaction().rollback();
+			return;
+		}
 		
 		System.out.println("Done grading the following submission:\n" +
 				"  User:         " + submission.contestant.getFullName() + "\n" +
