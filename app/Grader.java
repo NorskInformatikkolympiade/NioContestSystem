@@ -1,7 +1,10 @@
 import javax.persistence.EntityManager;
 
+import controllers.compilers.Compilers;
+
 import models.Submission;
 import models.SubmissionStatus;
+import models.compilers.CompileResult;
 import play.db.jpa.JPA;
 import play.jobs.Job;
 
@@ -63,15 +66,14 @@ public class Grader extends Job implements Runnable {
 			JPA.em().getTransaction().commit();
 		}
 		catch (Exception e) {
-			System.out.println("Error occurred when trying to set task status to RUNNING: " + e);
+			System.out.println("Error occurred when trying to set task status to " + SubmissionStatus.RUNNING + ": " + e);
 			JPA.em().getTransaction().rollback();
 			return;
 		}
 		
-		try {
-			Thread.sleep(5000);
-		}
-		catch (InterruptedException e) {}
+		//TODO: Can we customize paths for each developer?
+		CompileResult result = Compilers.compile(submission.language, submission.sourceCode, "E:\\Private\\eclipse-workspace\\NioContestSystem\\work", "Compiled.exe");
+		System.out.println("Compilation done in " + result.duration + " ms. Result: " + result.status);
 		
 		try {
 			JPA.em().getTransaction().begin();
@@ -82,7 +84,7 @@ public class Grader extends Job implements Runnable {
 			JPA.em().getTransaction().commit();
 		}
 		catch (Exception e) {
-			System.out.println("Error occurred when trying to set task status to COMPLETED: " + e);
+			System.out.println("Error occurred when trying to set task status to " + SubmissionStatus.COMPLETED + ": " + e);
 			JPA.em().getTransaction().rollback();
 			return;
 		}
