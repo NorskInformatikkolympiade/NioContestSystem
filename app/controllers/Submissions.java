@@ -19,8 +19,10 @@ import models.Submission;
 import models.SubmissionStatus;
 import models.Task;
 import play.mvc.Controller;
+import play.mvc.With;
 import viewmodels.ScoreboardEntry;
 
+@With(Secure.class)
 public class Submissions extends Controller {
 	public static void submit() {
 		render();

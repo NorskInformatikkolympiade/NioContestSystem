@@ -1,20 +1,31 @@
 package models;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Formatter;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import play.db.jpa.Model;
 import viewmodels.ScoreboardEntry;
 
 @Entity
 public class Contestant extends Model {
+	@Column(unique = true)
+	public String username;
+	
+	public String passwordHash;
 	public String firstName;
 	public String lastName;
 	public boolean isParticipant;
@@ -84,5 +95,21 @@ public class Contestant extends Model {
 		}
 		
 		return scoreboard;
+	}
+	
+	public static String hashPassword(String password) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-1");
+			byte[] passwordBytes = Charset.forName("UTF-8").encode(password).array();
+			byte[] hashBytes = md.digest(passwordBytes);
+			Formatter formatter = new Formatter();
+		    for (byte b : hashBytes) {
+		        formatter.format("%02x", b);
+		    }
+		    return formatter.toString();
+		}
+		catch (NoSuchAlgorithmException e) {
+			return null; // Won't happen
+		}
 	}
 }
