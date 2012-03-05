@@ -1,4 +1,4 @@
-package controllers.compilers;
+package utilities.compilers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeoutException;
 
-import controllers.cmd.CommandLineExecutor;
+import utilities.cmd.CommandLineExecutor;
+
 
 import models.Language;
 import models.cmd.CommandLineResult;

@@ -1,6 +1,5 @@
 import org.junit.*;
 
-import controllers.compilers.Compilers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,6 +10,7 @@ import java.util.*;
 
 import play.db.jpa.Transactional;
 import play.test.*;
+import utilities.compilers.Compilers;
 import viewmodels.ScoreboardEntry;
 import models.*;
 import models.compilers.CompileResult;

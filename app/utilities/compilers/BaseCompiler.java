@@ -1,4 +1,4 @@
-package controllers.compilers;
+package utilities.compilers;
 
 import java.io.BufferedWriter;
 import java.io.File;

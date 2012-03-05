@@ -1,3 +1,4 @@
+package jobs;
 import play.jobs.Job;
 import play.jobs.OnApplicationStop;
 

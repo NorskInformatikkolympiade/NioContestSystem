@@ -1,12 +1,13 @@
+package jobs;
 import javax.persistence.EntityManager;
 
-import controllers.compilers.Compilers;
 
 import models.Submission;
 import models.SubmissionStatus;
 import models.compilers.CompileResult;
 import play.db.jpa.JPA;
 import play.jobs.Job;
+import utilities.compilers.Compilers;
 
 //TODO: Not sure about what the best way to do this is, since an @OnApplicationStart job 
 //		is required to finish before the webapp starts processing requests. We might want 
