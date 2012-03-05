@@ -25,18 +25,19 @@ import viewmodels.ScoreboardEntry;
 @With(Secure.class)
 public class Submissions extends Controller {
 	public static void submit() {
-		render();
+		List<Task> tasks = Task.getAll();
+		render(tasks);
 	}
 	
-	public static void handleSubmission(File sourceCodeFile) {
+	public static void handleSubmission(long taskId, File sourceCodeFile) {
 		FileInputStream stream = null;
 		try {
 			stream = new FileInputStream(sourceCodeFile);
 			FileChannel fc = stream.getChannel();
 			MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
 			String sourceCode = Charset.forName("UTF-8").decode(bb).toString();
-			Contestant contestant = Contestant.find("lastName = 'Eldhuset'").first();
-			Task task = Task.find("title = 'Heisaturen'").first();
+			Contestant contestant = Contestant.find("byUsername", Security.connected()).first();
+			Task task = Task.findById(taskId);
 			new Submission(contestant, task, sourceCode, Language.CPP, new Date(), SubmissionStatus.QUEUED, 0).save();
 		}
 		catch (IOException e) {}

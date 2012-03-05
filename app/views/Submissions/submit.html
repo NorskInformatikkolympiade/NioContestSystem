@@ -2,6 +2,11 @@
 #{set title:'Lever besvarelse' /}
 
 #{form @handleSubmission(), enctype:'multipart/form-data'}
+	<select name="taskId">
+		#{list items: tasks, as: 'task'}
+			<option value="${task.id}">${task.number} - ${task.title}</option>
+		#{/list}
+	</select>
     <input type="file" name="sourceCodeFile" />
     <input type="submit" value="Lever" />
 #{/}

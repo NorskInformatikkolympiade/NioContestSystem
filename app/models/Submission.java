@@ -3,6 +3,7 @@ package models;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -17,10 +18,19 @@ public class Submission extends Model {
 	@ManyToOne(optional = false)
 	public Task task;
 	
+	@Column(columnDefinition = "text not null")
 	public String sourceCode;
+	
+	@Column(nullable = false)
 	public Language language;
+	
+	@Column(nullable = false)
 	public Date submittedAt;
+	
+	@Column(nullable = false)
 	public SubmissionStatus status;
+	
+	@Column(nullable = false)
 	public int score;
 	
 	public Submission(Contestant contestant, Task task, String sourceCode, Language language, Date submittedAt, SubmissionStatus status, int score) {
