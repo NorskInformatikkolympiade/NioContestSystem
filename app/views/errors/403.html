@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Ingen tilgang</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=${_response_encoding}"/>    
+    </head>
+    <body>
+        #{if play.mode.name() == 'DEV'}
+            #{403 result /}
+        #{/if}
+        #{else}
+            <h1>Ingen tilgang</h1>
+            <p>Du har ikke tilgang til denne siden, sannsynligvis fordi den inneholder informasjon om en annen deltager.</p>
+        #{/else}
+    </body>
+</html>

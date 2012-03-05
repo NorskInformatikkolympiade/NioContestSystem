@@ -11,7 +11,10 @@ import viewmodels.ScoreboardEntry;
 public class Contestants extends Controller {
 	public static void show(Long id) {
 		Contestant contestant = Contestant.findById(id);
-		render(contestant);
+		if (contestant.username.equals(Security.connected()))
+			render(contestant);
+		else
+			forbidden();
 	}
 	
 	public static void scoreboard() {
