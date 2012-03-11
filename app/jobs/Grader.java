@@ -1,12 +1,21 @@
 package jobs;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
 import javax.persistence.EntityManager;
+
+import org.codehaus.groovy.control.CompilePhase;
 
 
 import models.Submission;
 import models.SubmissionStatus;
+import models.cmd.CommandLineResult;
 import models.compilers.CompileResult;
+import models.compilers.CompileStatus;
 import play.db.jpa.JPA;
 import play.jobs.Job;
+import utilities.cmd.CommandLineExecutor;
+import utilities.cmd.ICommandLineExecutor;
 import utilities.compilers.Compilers;
 import utilities.compilers.ICompilers;
 
@@ -15,19 +24,22 @@ import utilities.compilers.ICompilers;
 //		to use regular threads instead and kick it off from Bootstrap.
 //@Every("1s")
 public class Grader extends Job implements Runnable {
-	private static Grader instance = new Grader();
-	private ICompilers compilers;
+	private static final Grader instance = new Grader();
+	private final ICompilers compilers;
+	private final ICommandLineExecutor commandLineExecutor;
 	private boolean shouldStop;
 	private boolean isRunning;
 	static boolean disableGradingDuringTesting;
 	
 	private Grader() {
 		this.compilers = Compilers.instance();
+		this.commandLineExecutor = new CommandLineExecutor();
 	}
 	
 	// For testing only
-	Grader(ICompilers compilers) {
+	Grader(ICompilers compilers, ICommandLineExecutor commandLineExecutor) {
 		this.compilers = compilers;
+		this.commandLineExecutor = commandLineExecutor;
 	}
 	
 	public static Grader getInstance() {
@@ -87,8 +99,25 @@ public class Grader extends Job implements Runnable {
 		}
 		
 		//TODO: Can we customize paths for each developer?
-		CompileResult result = compilers.compile(submission.language, submission.sourceCode, "E:\\Private\\eclipse-workspace\\NioContestSystem\\work", "Compiled.exe");
-		System.out.println("Compilation done in " + result.duration + " ms. Result: " + result.status);
+		CompileResult compileResult = compilers.compile(submission.language, submission.sourceCode, "E:\\Private\\eclipse-workspace\\NioContestSystem\\work", "Program.exe");
+		System.out.println("Compilation done in " + compileResult.duration + " ms. Result: " + compileResult.status);
+		
+		if (compileResult.status == CompileStatus.OK) {
+			System.out.println("Running compiled program...");
+			try {
+				CommandLineResult runResult = commandLineExecutor.execute(new String[] {"E:\\Private\\eclipse-workspace\\NioContestSystem\\work\\Program.exe"}, true, true, 1000);
+				
+			}
+			catch (TimeoutException e) {
+				
+			}
+			catch (IOException e) {
+				
+			}
+			catch (InterruptedException e) {
+				
+			}
+		}
 		
 		try {
 			JPA.em().getTransaction().begin();

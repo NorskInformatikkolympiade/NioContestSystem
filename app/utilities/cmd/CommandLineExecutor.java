@@ -9,12 +9,12 @@ import java.util.concurrent.TimeoutException;
 
 import models.cmd.CommandLineResult;
 
-public class CommandLineExecutor {
-	public static CommandLineResult execute(final String[] commandLine,
-											final boolean captureOutput, 
-											final boolean captureError,
-											final long timeout) 
-													throws IOException, InterruptedException, TimeoutException {
+public class CommandLineExecutor implements ICommandLineExecutor {
+	public CommandLineResult execute(final String[] commandLine,
+									 final boolean captureOutput, 
+									 final boolean captureError,
+									 final long timeout) 
+										throws IOException, InterruptedException, TimeoutException {
 		Runtime runtime = Runtime.getRuntime();
 		Process process = runtime.exec(commandLine);
 		String stdErr = null, stdOut = null;

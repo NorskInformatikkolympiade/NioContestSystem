@@ -5,11 +5,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import utilities.cmd.ICommandLineExecutor;
+
 public abstract class BaseCompiler {
-  protected long timeout;
+  protected final long timeout;
+  protected final ICommandLineExecutor commandLineExecutor;
   
-  protected BaseCompiler(long timeout) {
+  protected BaseCompiler(long timeout, ICommandLineExecutor commandLineExecutor) {
     this.timeout = timeout;
+    this.commandLineExecutor = commandLineExecutor;
   }
   
   protected void writeToFile(String contents, String folder, String fileName) throws IOException {

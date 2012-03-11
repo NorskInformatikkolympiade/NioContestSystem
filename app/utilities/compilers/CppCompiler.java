@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.concurrent.TimeoutException;
 
 import utilities.cmd.CommandLineExecutor;
+import utilities.cmd.ICommandLineExecutor;
 
 
 import models.Language;
@@ -15,8 +16,13 @@ import models.compilers.CompileResult;
 import models.compilers.CompileStatus;
 
 public class CppCompiler extends BaseCompiler implements Compiler {
+  // For testing
+  CppCompiler(long timeout, ICommandLineExecutor commandLineExecutor) {
+    super(timeout, commandLineExecutor);
+  }
+  
   public CppCompiler(long timeout) {
-    super(timeout);
+    this(timeout, new CommandLineExecutor());
   }
   
   @Override
@@ -30,7 +36,7 @@ public class CppCompiler extends BaseCompiler implements Compiler {
     String[] commandLine = { "g++", srcFile.getAbsolutePath(), "-o", execFile.getAbsolutePath() }; 
     
     CompileStatus status;
-    CommandLineResult result = CommandLineExecutor.execute(commandLine, true, true, timeout);
+    CommandLineResult result = commandLineExecutor.execute(commandLine, true, true, timeout);
     if (result.exitCode == 0) {
       status = CompileStatus.OK;
     } else {
