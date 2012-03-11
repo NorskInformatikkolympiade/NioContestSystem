@@ -1,12 +1,14 @@
 package jobs;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeoutException;
 
 import javax.persistence.EntityManager;
 
-import org.codehaus.groovy.control.CompilePhase;
-
-
+import models.DataSet;
 import models.Submission;
 import models.SubmissionStatus;
 import models.cmd.CommandLineResult;
@@ -15,7 +17,9 @@ import models.compilers.CompileStatus;
 import play.db.jpa.JPA;
 import play.jobs.Job;
 import utilities.cmd.CommandLineExecutor;
+import utilities.cmd.FileHelper;
 import utilities.cmd.ICommandLineExecutor;
+import utilities.cmd.IFileHelper;
 import utilities.compilers.Compilers;
 import utilities.compilers.ICompilers;
 
@@ -27,19 +31,20 @@ public class Grader extends Job implements Runnable {
 	private static final Grader instance = new Grader();
 	private final ICompilers compilers;
 	private final ICommandLineExecutor commandLineExecutor;
+	private final IFileHelper fileHelper;
 	private boolean shouldStop;
 	private boolean isRunning;
 	static boolean disableGradingDuringTesting;
 	
 	private Grader() {
-		this.compilers = Compilers.instance();
-		this.commandLineExecutor = new CommandLineExecutor();
+		this(Compilers.instance(), new CommandLineExecutor(), new FileHelper());
 	}
 	
 	// For testing only
-	Grader(ICompilers compilers, ICommandLineExecutor commandLineExecutor) {
+	Grader(ICompilers compilers, ICommandLineExecutor commandLineExecutor, IFileHelper fileReader) {
 		this.compilers = compilers;
 		this.commandLineExecutor = commandLineExecutor;
+		this.fileHelper = fileReader;
 	}
 	
 	public static Grader getInstance() {
@@ -103,20 +108,7 @@ public class Grader extends Job implements Runnable {
 		System.out.println("Compilation done in " + compileResult.duration + " ms. Result: " + compileResult.status);
 		
 		if (compileResult.status == CompileStatus.OK) {
-			System.out.println("Running compiled program...");
-			try {
-				CommandLineResult runResult = commandLineExecutor.execute(new String[] {"E:\\Private\\eclipse-workspace\\NioContestSystem\\work\\Program.exe"}, true, true, 1000);
-				
-			}
-			catch (TimeoutException e) {
-				
-			}
-			catch (IOException e) {
-				
-			}
-			catch (InterruptedException e) {
-				
-			}
+			runCompiledProgramOnDataSets("E:\\Private\\eclipse-workspace\\NioContestSystem\\work\\Program.exe", submission);
 		}
 		
 		try {
@@ -139,6 +131,30 @@ public class Grader extends Job implements Runnable {
 				"  Task:         " + submission.task.title + "\n" +
 				"  Submitted at: " + submission.submittedAt + "\n" + 
 				"  Score:        " + submission.score);
+	}
+	
+	private void runCompiledProgramOnDataSets(String programPath, Submission submission) {
+		System.out.println("Running compiled program...");
+		for (DataSet dataSet : submission.task.dataSets) {
+			runCompiledProgramOnDataSet(programPath, dataSet);
+		}
+	}
+	
+	private boolean runCompiledProgramOnDataSet(String programPath, DataSet dataSet) {
+		try {
+			byte[] inputData = fileHelper.readAllBytes(dataSet.getInputFileName());
+			CommandLineResult runResult = commandLineExecutor.execute(new String[] {programPath}, inputData, true, true, 1000);
+			return false;
+		}
+		catch (TimeoutException e) {
+			return false;
+		}
+		catch (IOException e) {
+			return false;
+		}
+		catch (InterruptedException e) {
+			return false;
+		}
 	}
 	
 	public void stop() {

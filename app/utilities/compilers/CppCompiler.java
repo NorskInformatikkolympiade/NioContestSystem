@@ -35,7 +35,7 @@ public class CppCompiler extends BaseCompiler implements Compiler {
 		String[] commandLine = { "g++", srcFile.getAbsolutePath(), "-o", execFile.getAbsolutePath() };
 
 		CompileStatus status;
-		CommandLineResult result = commandLineExecutor.execute(commandLine, true, true, timeout);
+		CommandLineResult result = commandLineExecutor.execute(commandLine, new byte[0], true, true, timeout);
 		if (result.exitCode == 0) {
 			status = CompileStatus.OK;
 		} else {

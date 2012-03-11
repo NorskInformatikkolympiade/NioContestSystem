@@ -11,6 +11,7 @@ import models.cmd.CommandLineResult;
 
 public class CommandLineExecutor implements ICommandLineExecutor {
 	public CommandLineResult execute(final String[] commandLine,
+									 byte[] standardInput,
 									 final boolean captureOutput, 
 									 final boolean captureError,
 									 final long timeout) 
@@ -26,6 +27,7 @@ public class CommandLineExecutor implements ICommandLineExecutor {
 		if (captureError)
 			new InputStreamHandler(stdErrCapture, process.getErrorStream());
 		
+		process.getOutputStream().write(standardInput);
 		Worker worker = new Worker(process);
 		worker.start();
 		try {
