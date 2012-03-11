@@ -19,7 +19,7 @@ import models.compilers.CompileStatus;
  * @author geir
  *
  */
-public class Compilers {
+public class Compilers implements ICompilers {
   private static final long TIME_LIMIT = 10000;  // 10 seconds
   private static Compilers instance = null;
   private ArrayList<Compiler> compilers;
@@ -40,22 +40,18 @@ public class Compilers {
    * @param fileName name of the compiled executable
    * @return the result of the compilation
    */
-  public static synchronized CompileResult compile(Language language,
-                                                   String source,
-                                                   String folder,
-                                                   String fileName) {
+  public static synchronized Compilers instance() {
     if (instance == null) {
       instance = new Compilers();
     }
-    return instance.compileIt(language, source, folder, fileName);
+    return instance;
   }
   
-  private CompileResult compileIt(Language lang, String src,
-                                  String folder, String fileName) {
+  public CompileResult compile(Language language, String source, String folder, String fileName) {
     for (Compiler compiler : compilers) {
-      if (compiler.getLanguage() == lang) {
+      if (compiler.getLanguage() == language) {
         try {
-          return compiler.compile(src, folder, fileName);
+          return compiler.compile(source, folder, fileName);
         } catch (IOException e) {
           e.printStackTrace();
           return new CompileResult(CompileStatus.INTERNAL_ERROR, null, null, -1);

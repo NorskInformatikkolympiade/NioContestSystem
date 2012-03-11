@@ -37,7 +37,7 @@ public class CompilersTest extends FunctionalTest {
     assertTrue(testProgram.exists());
     BufferedReader br = new BufferedReader(new FileReader(testProgram));
     String program = readAll(br);
-    CompileResult res = Compilers.compile(Language.CPP, program, "/tmp", "test");
+    CompileResult res = Compilers.instance().compile(Language.CPP, program, "/tmp", "test");
     assertEquals(CompileStatus.OK, res.status);
     System.out.println("Compile took: " + res.duration + "ms");
   }
@@ -47,12 +47,12 @@ public class CompilersTest extends FunctionalTest {
    * TODO(geir): Test won't work if /tmp does not exist
    * @throws IOException
    */
-  public void compileCppWhiteSpace() throws IOException {
+  public void compileCppWithWhiteSpaceInFileName() throws IOException {
     File testProgram = new File("test", "test.cpp");
     assertTrue(testProgram.exists());
     BufferedReader br = new BufferedReader(new FileReader(testProgram));
     String program = readAll(br);
-    CompileResult res = Compilers.compile(Language.CPP, program, "/tmp/", "the awesome executable");
+    CompileResult res = Compilers.instance().compile(Language.CPP, program, "/tmp/", "the awesome executable");
     assertEquals(CompileStatus.OK, res.status);
     System.out.println("Compile took: " + res.duration + "ms");
   }

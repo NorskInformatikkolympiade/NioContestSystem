@@ -8,6 +8,7 @@ import models.compilers.CompileResult;
 import play.db.jpa.JPA;
 import play.jobs.Job;
 import utilities.compilers.Compilers;
+import utilities.compilers.ICompilers;
 
 //TODO: Not sure about what the best way to do this is, since an @OnApplicationStart job 
 //		is required to finish before the webapp starts processing requests. We might want 
@@ -15,10 +16,18 @@ import utilities.compilers.Compilers;
 //@Every("1s")
 public class Grader extends Job implements Runnable {
 	private static Grader instance = new Grader();
+	private ICompilers compilers;
 	private boolean shouldStop;
 	private boolean isRunning;
+	static boolean disableGradingDuringTesting;
 	
 	private Grader() {
+		this.compilers = Compilers.instance();
+	}
+	
+	// For testing only
+	Grader(ICompilers compilers) {
+		this.compilers = compilers;
 	}
 	
 	public static Grader getInstance() {
@@ -26,6 +35,8 @@ public class Grader extends Job implements Runnable {
 	}
 	
 	public void doJob() {
+		if (disableGradingDuringTesting)
+			return;
 		System.out.println("Starting grader");
 		JPA.em().getTransaction().rollback(); // Abort the transaction Play! has started for the job; we'll control our transactions ourselves
 		isRunning = true;
@@ -43,6 +54,7 @@ public class Grader extends Job implements Runnable {
 			}
 			catch (Exception e) {
 				System.out.println("Exception thrown while grading: " + e);
+				e.printStackTrace();
 			}
 		}
 		isRunning = false;
@@ -53,7 +65,8 @@ public class Grader extends Job implements Runnable {
 		return Submission.find("status = ? order by submittedAt asc", SubmissionStatus.QUEUED).first();
 	}
 	
-	private void grade(Submission submission) {
+	// Default visibility for testing
+	void grade(Submission submission) {
 		System.out.println("Grading the following submission:\n" +
 				"  User:         " + submission.contestant.getFullName() + "\n" +
 				"  Task:         " + submission.task.title + "\n" +
@@ -68,12 +81,13 @@ public class Grader extends Job implements Runnable {
 		}
 		catch (Exception e) {
 			System.out.println("Error occurred when trying to set task status to " + SubmissionStatus.RUNNING + ": " + e);
+			e.printStackTrace();
 			JPA.em().getTransaction().rollback();
 			return;
 		}
 		
 		//TODO: Can we customize paths for each developer?
-		CompileResult result = Compilers.compile(submission.language, submission.sourceCode, "E:\\Private\\eclipse-workspace\\NioContestSystem\\work", "Compiled.exe");
+		CompileResult result = compilers.compile(submission.language, submission.sourceCode, "E:\\Private\\eclipse-workspace\\NioContestSystem\\work", "Compiled.exe");
 		System.out.println("Compilation done in " + result.duration + " ms. Result: " + result.status);
 		
 		try {
@@ -86,6 +100,7 @@ public class Grader extends Job implements Runnable {
 		}
 		catch (Exception e) {
 			System.out.println("Error occurred when trying to set task status to " + SubmissionStatus.COMPLETED + ": " + e);
+			e.printStackTrace();
 			JPA.em().getTransaction().rollback();
 			return;
 		}
