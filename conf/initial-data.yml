@@ -4,8 +4,8 @@
 Task(heisaturen):
     number: 1
     title: Heisaturen
-    weight: 50
-    dataSetPath: /home/nio/heis/data
+    weight: 70
+    dataSetPath: E:\Private\eclipse-workspace\NioContestSystem\sets\1
 
 Task(kast):
     number: 2
@@ -57,45 +57,9 @@ DataSet(t1d1):
 DataSet(t1d2):
     task: heisaturen 
     number: 2
-    weight: 10
+    weight: 20
 
 DataSet(t1d3):
     task: heisaturen 
     number: 3
-    weight: 20
-
-Submission(t1u1s1):
-    task: heisaturen
-    contestant: aasmund
-    submittedAt: 2012-02-21 13:52:35
-    status: COMPLETED
-    score: 59
-    language: CPP
-    sourceCode: int main() { return 0; }
-
-Submission(t1u1s2):
-    task: heisaturen
-    contestant: aasmund
-    submittedAt: 2012-02-21 16:18:08
-    status: QUEUED
-    score: 0
-    language: CPP
-    sourceCode: int main() { return 0; }
-
-Submission(t1u3s1):
-    task: heisaturen
-    contestant: fredrik
-    submittedAt: 2012-02-21 12:00:00
-    status: QUEUED
-    score: 0
-    language: CPP
-    sourceCode: int main() { return 0; }
-
-Submission(t4u3s1):
-    task: thailand
-    contestant: fredrik
-    submittedAt: 2012-02-21 13:01:59
-    status: COMPLETED
-    score: 34
-    language: CPP
-    sourceCode: int main() { return 0; }
+    weight: 40

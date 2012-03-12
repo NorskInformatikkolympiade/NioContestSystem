@@ -10,6 +10,7 @@ import models.Language;
 import models.Submission;
 import models.SubmissionStatus;
 import models.Task;
+import models.cmd.CommandLineResult;
 import models.compilers.CompileResult;
 import models.compilers.CompileStatus;
 
@@ -43,17 +44,18 @@ public class GraderTest extends UnitTest {
 	}
 	
 	@Before
-	public void setup() {
+	public void setup() throws TimeoutException, IOException, InterruptedException {
 		Fixtures.deleteDatabase();
 		compilersMock = mock(ICompilers.class);
 		commandLineMock = mock(ICommandLineExecutor.class);
 		fileHelperMock = mock(IFileHelper.class);
+		when(commandLineMock.execute((String[])anyObject(), (byte[])anyObject(), anyBoolean(), anyBoolean(), anyLong())).thenReturn(new CommandLineResult(0, "", "", 100));
 		grader = new Grader(compilersMock, commandLineMock, fileHelperMock);
 		contestant = new Contestant("Ola", "Nordmann", true, false).save();
-		task = new Task(1, "Heisaturen", 100, "C:/dataSets").save();
-		new DataSet(task, 1, 10).save();
-		new DataSet(task, 2, 20).save();
-		new DataSet(task, 3, 40).save();
+		task = new Task(1, "Heisaturen", 3, "C:/dataSets").save();
+		new DataSet(task, 1, 1).save();
+		new DataSet(task, 2, 1).save();
+		new DataSet(task, 3, 1).save();
 		task.refresh();
 	}
 	
@@ -83,7 +85,7 @@ public class GraderTest extends UnitTest {
 
 	@Test
 	public void shouldSetStatusToCompletedButNotInvokeCommandLineExecutorWhenCompilationFailsBecauseOfInternalError() {
-		final Submission submission = new Submission(contestant, task, "int main() { return a; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0).save();
+		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0).save();
 		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.INTERNAL_ERROR, "", "", 1000));
 		flushAndCommit();
 		
@@ -96,7 +98,7 @@ public class GraderTest extends UnitTest {
 	
 	@Test
 	public void shouldSetStatusToCompletedButNotInvokeCommandLineExecutorWhenCompilationFailsBecauseOfTimeout() {
-		final Submission submission = new Submission(contestant, task, "int main() { return a; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0).save();
+		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0).save();
 		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.TIMEOUT, "", "", 10000));
 		flushAndCommit();
 		
@@ -109,7 +111,7 @@ public class GraderTest extends UnitTest {
 	
 	@Test
 	public void shouldRunCompiledProgramAgainstAllTaskDataSetsAndSetStatusToCompletedWhenCompilationSucceeds() throws TimeoutException, InterruptedException, IOException {
-		final Submission submission = new Submission(contestant, task, "int main() { return a; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0).save();
+		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0).save();
 		byte[][] inputFiles = new byte[][] {
 			new byte[]{65, 66, 67},
 			new byte[]{97, 98, 99},
@@ -132,6 +134,26 @@ public class GraderTest extends UnitTest {
 			assertArrayEquals(new String[] {"E:\\Private\\eclipse-workspace\\NioContestSystem\\work\\Program.exe"}, stringArrayCaptor.getAllValues().get(i));
 			assertArrayEquals(inputFiles[i], byteArrayCaptor.getAllValues().get(i));
 		}
+	}
+	
+	@Test
+	public void shouldAssignPointsForEachDataSetWhereTheProgramReturnsSuccessfullyAndProducesTheExpectedOutput() throws TimeoutException, InterruptedException, IOException {
+		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0).save();
+		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.OK, "", "", 1000));
+		when(fileHelperMock.readAllBytes(anyString())).thenReturn(new byte[0]);
+		when(fileHelperMock.readAllAsString("C:/dataSets/1.out")).thenReturn("ab\ncde fg\n");
+		when(fileHelperMock.readAllAsString("C:/dataSets/2.out")).thenReturn("qw\nsd tyu\n");
+		when(fileHelperMock.readAllAsString("C:/dataSets/3.out")).thenReturn("abc\n");
+		when(commandLineMock.execute((String[])anyObject(), (byte[])anyObject(), anyBoolean(), anyBoolean(), anyLong())).thenReturn(
+				new CommandLineResult(0, "ab\ncde fg\n", "", 100),
+				new CommandLineResult(0, "qw\nnsdtyu\n", "", 100),
+				new CommandLineResult(1, "abc\n", "", 100));
+		flushAndCommit();
+		
+		grader.grade(submission);
+		
+		submission.refresh();
+		assertEquals(1, submission.score);
 	}
 	
 	private void flushAndCommit() {

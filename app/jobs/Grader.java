@@ -2,6 +2,7 @@ package jobs;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeoutException;
@@ -108,13 +109,12 @@ public class Grader extends Job implements Runnable {
 		System.out.println("Compilation done in " + compileResult.duration + " ms. Result: " + compileResult.status);
 		
 		if (compileResult.status == CompileStatus.OK) {
-			runCompiledProgramOnDataSets("E:\\Private\\eclipse-workspace\\NioContestSystem\\work\\Program.exe", submission);
+			submission.score = runCompiledProgramOnDataSets("E:\\Private\\eclipse-workspace\\NioContestSystem\\work\\Program.exe", submission);
 		}
 		
 		try {
 			JPA.em().getTransaction().begin();
 			submission.status = SubmissionStatus.COMPLETED;
-			submission.score = (int)(Math.random() * 101);
 			submission.save();
 			JPA.em().flush();
 			JPA.em().getTransaction().commit();
@@ -133,26 +133,46 @@ public class Grader extends Job implements Runnable {
 				"  Score:        " + submission.score);
 	}
 	
-	private void runCompiledProgramOnDataSets(String programPath, Submission submission) {
+	private int runCompiledProgramOnDataSets(String programPath, Submission submission) {
 		System.out.println("Running compiled program...");
+		int weightSum = 0, successfulWeightSum = 0;
 		for (DataSet dataSet : submission.task.dataSets) {
-			runCompiledProgramOnDataSet(programPath, dataSet);
+			weightSum += dataSet.weight;
+			System.out.print("  Set #" + dataSet.number + " (" + dataSet.weight + ")... ");
+			if (runCompiledProgramOnDataSet(programPath, dataSet)) {
+				successfulWeightSum += dataSet.weight;
+				System.out.println("correct");
+			}
+			else {
+				System.out.println("incorrect");
+			}
 		}
+		if (weightSum == 0)
+			return 0;
+		int score = submission.task.weight * successfulWeightSum / weightSum;
+		System.out.println("  Score: " + score + " (of " + submission.task.weight + ")");
+		return score;
 	}
 	
 	private boolean runCompiledProgramOnDataSet(String programPath, DataSet dataSet) {
 		try {
 			byte[] inputData = fileHelper.readAllBytes(dataSet.getInputFileName());
 			CommandLineResult runResult = commandLineExecutor.execute(new String[] {programPath}, inputData, true, true, 1000);
-			return false;
+			if (runResult.exitCode != 0)
+				return false;
+			String expectedOutput = fileHelper.readAllAsString(dataSet.getOutputFileName());
+			return runResult.stdOut != null && runResult.stdOut.equals(expectedOutput);
 		}
 		catch (TimeoutException e) {
+			e.printStackTrace();
 			return false;
 		}
 		catch (IOException e) {
+			e.printStackTrace();
 			return false;
 		}
 		catch (InterruptedException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}

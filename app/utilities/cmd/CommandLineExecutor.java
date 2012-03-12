@@ -28,6 +28,7 @@ public class CommandLineExecutor implements ICommandLineExecutor {
 			new InputStreamHandler(stdErrCapture, process.getErrorStream());
 		
 		process.getOutputStream().write(standardInput);
+		process.getOutputStream().flush();
 		Worker worker = new Worker(process);
 		worker.start();
 		try {
