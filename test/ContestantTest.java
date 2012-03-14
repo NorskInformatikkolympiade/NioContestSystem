@@ -16,8 +16,8 @@ public class ContestantTest extends UnitTest {
     public void getScoreForTaskShouldReturnZeroWhenUserHasNoSubmissionsForThatTask() {
         Task task = new Task(1, "Banana Republic", 100, "").save();
         Task otherTask = new Task(2, "Foo", 200, "").save();
-        Contestant contestant = new Contestant("Ola", "Nordmann", true, false).save();
-        Contestant otherContestant = new Contestant("Per", "Nilsen", true, false).save();
+        Contestant contestant = new Contestant("Ola", "Nordmann", false).save();
+        Contestant otherContestant = new Contestant("Per", "Nilsen", false).save();
         new Submission(contestant, otherTask, "", Language.CPP, new Date(), SubmissionStatus.COMPLETED, 100).save();
         new Submission(otherContestant, task, "", Language.CPP, new Date(), SubmissionStatus.COMPLETED, 100).save();
         
@@ -29,7 +29,7 @@ public class ContestantTest extends UnitTest {
     @Test
     public void getScoreForTaskShouldReturnZeroWhenAllTheUsersSubmissionsForThatTaskHaveZeroPoints() {
         Task task = new Task(1, "Banana Republic", 100, "").save();
-        Contestant user = new Contestant("Ola", "Nordmann", true, false).save();
+        Contestant user = new Contestant("Ola", "Nordmann", false).save();
         new Submission(user, task, "", Language.CPP, new Date(), SubmissionStatus.COMPLETED, 0).save();
         new Submission(user, task, "", Language.CPP, new Date(), SubmissionStatus.QUEUED, 0).save();
         new Submission(user, task, "", Language.CPP, new Date(), SubmissionStatus.RUNNING, 0).save();
@@ -42,7 +42,7 @@ public class ContestantTest extends UnitTest {
     @Test
     public void getScoreForTaskShouldReturnTheSubmissionScoreWhenThereIsOnlyOneSubmission() {
         Task task = new Task(1, "Banana Republic", 100, "").save();
-        Contestant contestant = new Contestant("Ola", "Nordmann", true, false).save();
+        Contestant contestant = new Contestant("Ola", "Nordmann", false).save();
         new Submission(contestant, task, "", Language.CPP, new Date(), SubmissionStatus.COMPLETED, 43).save();
         
         int score = contestant.getScoreForTask(task.id);
@@ -53,7 +53,7 @@ public class ContestantTest extends UnitTest {
     @Test
     public void getScoreForTaskShouldReturnTheGreatestSubmissionScoreWhenThereAreManySubmissions() {
         Task task = new Task(1, "Banana Republic", 100, "").save();
-        Contestant contestant = new Contestant("Ola", "Nordmann", true, false).save();
+        Contestant contestant = new Contestant("Ola", "Nordmann", false).save();
         new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 12, 5, 9), SubmissionStatus.COMPLETED, 0).save();
         new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 12, 15, 0), SubmissionStatus.COMPLETED, 10).save();
         new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 12, 23, 18), SubmissionStatus.COMPLETED, 58).save();
@@ -71,7 +71,7 @@ public class ContestantTest extends UnitTest {
         new Task(1, "Banana Republic", 100, "").save();
         new Task(2, "Banana Republic", 50, "").save();
         new Task(3, "Banana Republic", 200, "").save();
-        Contestant contestant = new Contestant("Ola", "Nordmann", true, false).save();
+        Contestant contestant = new Contestant("Ola", "Nordmann", false).save();
         
         int score = contestant.getTotalScore();
         
@@ -83,8 +83,8 @@ public class ContestantTest extends UnitTest {
         Task taskOne = new Task(1, "Banana Republic", 100, "").save();
         Task taskTwo = new Task(2, "Banana Republic", 50, "").save();
         Task taskThree = new Task(3, "Banana Republic", 200, "").save();
-        Contestant contestant = new Contestant("Ola", "Nordmann", true, false).save();
-        Contestant otherContestant = new Contestant("Per", "Hansen", true, false).save();
+        Contestant contestant = new Contestant("Ola", "Nordmann", false).save();
+        Contestant otherContestant = new Contestant("Per", "Hansen", false).save();
         new Submission(contestant, taskOne, "", Language.CPP, new Date(2012, 2, 5, 12, 5, 9), SubmissionStatus.COMPLETED, 0).save();
         new Submission(contestant, taskOne, "", Language.CPP, new Date(2012, 2, 5, 12, 15, 0), SubmissionStatus.COMPLETED, 10).save();
         new Submission(contestant, taskTwo, "", Language.CPP, new Date(2012, 2, 5, 12, 23, 18), SubmissionStatus.COMPLETED, 58).save();
@@ -105,9 +105,9 @@ public class ContestantTest extends UnitTest {
     public void getScoreboardShouldReturnAllContestantsOrderedByTotalScore() {
     	Task taskOne = new Task(1, "Banana Republic", 100, "").save();
         Task taskTwo = new Task(2, "Banana Republic", 50, "").save();
-        Contestant contestantOne = new Contestant("Ola", "Nordmann", true, false).save();
-        Contestant contestantTwo = new Contestant("Per", "Hansen", true, false).save();
-        Contestant contestantThree = new Contestant("Lars", "Nilsen", true, false).save();
+        Contestant contestantOne = new Contestant("Ola", "Nordmann", false).save();
+        Contestant contestantTwo = new Contestant("Per", "Hansen", false).save();
+        Contestant contestantThree = new Contestant("Lars", "Nilsen", false).save();
         TestData.AddSubmissions(contestantOne, taskOne, 2, 29, 28);
         TestData.AddSubmissions(contestantOne, taskTwo, 50, 23, 0);
         TestData.AddSubmissions(contestantTwo, taskOne, 20, 99);
@@ -125,11 +125,11 @@ public class ContestantTest extends UnitTest {
     @Test
     public void getScoreboardShouldGiveEqualPositionNumbersToTiedContestantsAndOrderThemByNameAndSkipPositionNumbers() {
     	Task task = new Task(1, "Banana Republic", 100, "").save();
-        Contestant contestantOne = new Contestant("Ola", "Nordmann", true, false).save();
-        Contestant contestantTwo = new Contestant("Per", "Hansen", true, false).save();
-        Contestant contestantThree = new Contestant("Lars", "Nilsen", true, false).save();
-        Contestant contestantFour = new Contestant("Henrik", "Olsen", true, false).save();
-        Contestant contestantFive = new Contestant("Andreas", "Larsen", true, false).save();
+        Contestant contestantOne = new Contestant("Ola", "Nordmann", false).save();
+        Contestant contestantTwo = new Contestant("Per", "Hansen", false).save();
+        Contestant contestantThree = new Contestant("Lars", "Nilsen", false).save();
+        Contestant contestantFour = new Contestant("Henrik", "Olsen", false).save();
+        Contestant contestantFive = new Contestant("Andreas", "Larsen", false).save();
         TestData.AddSubmissions(contestantOne, task, 42);
         TestData.AddSubmissions(contestantTwo, task, 10);
         TestData.AddSubmissions(contestantThree, task, 42);
@@ -149,9 +149,9 @@ public class ContestantTest extends UnitTest {
     @Test
     public void getScoreboardShouldGiveFirstPlaceToEverybodyWhenAllScoresAreEqual() {
     	Task task = new Task(1, "Banana Republic", 100, "").save();
-        Contestant contestantOne = new Contestant("Ola", "Nordmann", true, false).save();
-        Contestant contestantTwo = new Contestant("Per", "Hansen", true, false).save();
-        Contestant contestantThree = new Contestant("Lars", "Nilsen", true, false).save();
+        Contestant contestantOne = new Contestant("Ola", "Nordmann", false).save();
+        Contestant contestantTwo = new Contestant("Per", "Hansen", false).save();
+        Contestant contestantThree = new Contestant("Lars", "Nilsen", false).save();
         TestData.AddSubmissions(contestantOne, task, 8);
         TestData.AddSubmissions(contestantTwo, task, 8);
         TestData.AddSubmissions(contestantThree, task, 8);
@@ -162,6 +162,22 @@ public class ContestantTest extends UnitTest {
         assertScoreboardEntry(scoreboard.get(0), 1, contestantThree.id, "Lars Nilsen", 8);
         assertScoreboardEntry(scoreboard.get(1), 1, contestantOne.id, "Ola Nordmann", 8);
         assertScoreboardEntry(scoreboard.get(2), 1, contestantTwo.id, "Per Hansen", 8);
+    }
+    
+    @Test
+    public void getScoreboardShouldExcludeAdmins() {
+    	Contestant contestantOne = new Contestant("Arne", "Nordmann", false).save();
+        Contestant contestantTwo = new Contestant("Fredrik", "Hansen", false).save();
+        Contestant contestantThree = new Contestant("Lars", "Nilsen", false).save();
+        new Contestant("Karl", "Andersen", true).save();
+        new Contestant("Ole", "Larsen", true).save();
+        
+        List<ScoreboardEntry> scoreboard = Contestant.getScoreboard();
+        
+        assertEquals(3, scoreboard.size());
+        assertEquals(contestantOne.id.longValue(), scoreboard.get(0).contestantId);
+        assertEquals(contestantTwo.id.longValue(), scoreboard.get(1).contestantId);
+        assertEquals(contestantThree.id.longValue(), scoreboard.get(2).contestantId);
     }
     
     private void assertScoreboardEntry(ScoreboardEntry actual, long expectedPosition, long expectedContestantId, String expectedName, int expectedScore) {

@@ -51,7 +51,7 @@ public class GraderTest extends UnitTest {
 		fileHelperMock = mock(IFileHelper.class);
 		when(commandLineMock.execute((String[])anyObject(), (byte[])anyObject(), anyBoolean(), anyBoolean(), anyLong())).thenReturn(new CommandLineResult(0, "", "", 100));
 		grader = new Grader(compilersMock, commandLineMock, fileHelperMock);
-		contestant = new Contestant("Ola", "Nordmann", true, false).save();
+		contestant = new Contestant("Ola", "Nordmann", false).save();
 		task = new Task(1, "Heisaturen", 3, "C:/dataSets").save();
 		new DataSet(task, 1, 1).save();
 		new DataSet(task, 2, 1).save();

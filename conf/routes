@@ -3,6 +3,7 @@
 # ~~~~
 
 *       /                                       module:secure
+GET		/										Tasks.index
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

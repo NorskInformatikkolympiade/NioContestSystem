@@ -16,15 +16,21 @@
     			<hgroup>
     				<h1 id="site-title">Norsk informatikkolympiade</h1>
     				<h2 id="site-description">Konkurransesystem</h2>
+    				<p>Velkommen, ${currentContestant.getFullName()}! [<a href="@{Secure.logout}">Logg ut</a>]</p>
    				</hgroup>
    				<nav id="access">
 					<div class="menu">
 						<ul>
 							<li class="page_item"><a href="@{Tasks.index()}">Oppgaver</a></li>
-							<li class="page_item"><a href="@{Submissions.submit()}">Innlevering</a></li>
-							<li class="page_item"><a href="@{Contestants.self()}">Status</a></li>
-						</ul>					
-					</div>   				
+							#{if isAdmin}
+								<li class="page_item"><a href="@{Contestants.scoreboard()}">Scoreboard</a></li>
+							#{/if}
+							#{else}
+								<li class="page_item"><a href="@{Submissions.submit()}">Innlevering</a></li>
+								<li class="page_item"><a href="@{Contestants.self()}">Status</a></li>
+							#{/else}
+						</ul>
+					</div>
    				</nav>
     		</header>
     		<div id="main">

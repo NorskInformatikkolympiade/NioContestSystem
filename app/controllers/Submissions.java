@@ -22,14 +22,23 @@ import play.mvc.Controller;
 import play.mvc.With;
 import viewmodels.ScoreboardEntry;
 
-@With(Secure.class)
+@With(Security.class)
 public class Submissions extends Controller {
 	public static void submit() {
-		List<Task> tasks = Task.getAll();
-		render(tasks);
+		if (Security.getCurrentContestant().isAdmin)
+			forbidden();
+		else {
+			List<Task> tasks = Task.getAll();
+			render(tasks);
+		}
 	}
 	
 	public static void handleSubmission(long taskId, File sourceCodeFile) {
+		if (Security.getCurrentContestant().isAdmin) {
+			forbidden();
+			return;
+		}
+		
 		FileInputStream stream = null;
 		try {
 			stream = new FileInputStream(sourceCodeFile);

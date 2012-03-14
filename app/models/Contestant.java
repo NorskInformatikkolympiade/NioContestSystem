@@ -28,16 +28,14 @@ public class Contestant extends Model {
 	public String passwordHash;
 	public String firstName;
 	public String lastName;
-	public boolean isParticipant;
 	public boolean isAdmin;
 	
 	@OneToMany(mappedBy = "contestant", cascade = CascadeType.ALL)
 	public List<Submission> submissions = new ArrayList<Submission>();
 	
-	public Contestant(String firstName, String lastName, boolean isParticipant, boolean isAdmin) {
+	public Contestant(String firstName, String lastName, boolean isAdmin) {
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.isParticipant = isParticipant;
 		this.isAdmin = isAdmin;
 	}
 	
@@ -69,6 +67,8 @@ public class Contestant extends Model {
 	public static List<ScoreboardEntry> getScoreboard() {
 		List<ScoreboardEntry> scoreboard = new ArrayList<ScoreboardEntry>();
 		for (Contestant contestant : Contestant.getAll()) {
+			if (contestant.isAdmin)
+				continue;
 			ScoreboardEntry entry = new ScoreboardEntry();
 			entry.contestantId = contestant.id;
 			entry.name = contestant.getFullName();

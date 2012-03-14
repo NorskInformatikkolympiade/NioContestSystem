@@ -30,15 +30,13 @@ Contestant(aasmund):
     passwordHash: a9993e364706816aba3e25717850c26c9cd0d89d
     firstName: Åsmund
     lastName: Eldhuset
-    isParticipant: true
-    isAdmin: true
+    isAdmin: false
 
 Contestant(geir):
     username: geir
     passwordHash: 924f61661a3472da74307a35f2c8d22e07e84a4d
     firstName: Geir K.
     lastName: Engdahl
-    isParticipant: false
     isAdmin: true
 
 Contestant(fredrik):
@@ -46,7 +44,6 @@ Contestant(fredrik):
     passwordHash: 5af13954a67eab2973b4ade01186602dd8739787
     firstName: Fredrik
     lastName: Carlsen
-    isParticipant: true
     isAdmin: false
 
 DataSet(t1d1):

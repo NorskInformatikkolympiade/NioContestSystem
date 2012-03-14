@@ -7,11 +7,11 @@ import play.mvc.Controller;
 import play.mvc.With;
 import viewmodels.ScoreboardEntry;
 
-@With(Secure.class)
+@With(Security.class)
 public class Contestants extends Controller {
 	public static void show(Long id) {
 		Contestant contestant = Contestant.findById(id);
-		if (contestant.username.equals(Security.connected()))
+		if (contestant.username.equals(Security.connected()) || Security.getCurrentContestant().isAdmin)
 			render(contestant);
 		else
 			forbidden();
@@ -26,7 +26,11 @@ public class Contestants extends Controller {
 	}
 	
 	public static void scoreboard() {
-		List<ScoreboardEntry> scoreboard = Contestant.getScoreboard();
-		render(scoreboard);
+		if (Security.getCurrentContestant().isAdmin) {
+			List<ScoreboardEntry> scoreboard = Contestant.getScoreboard();
+			render(scoreboard);
+		}
+		else
+			forbidden();
 	}
 }
