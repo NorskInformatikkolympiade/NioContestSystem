@@ -39,6 +39,7 @@ public class Submissions extends Controller {
 			return;
 		}
 		
+		Task task = Task.findById(taskId);
 		FileInputStream stream = null;
 		try {
 			stream = new FileInputStream(sourceCodeFile);
@@ -46,7 +47,6 @@ public class Submissions extends Controller {
 			MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
 			String sourceCode = Charset.forName("UTF-8").decode(bb).toString();
 			Contestant contestant = Contestant.find("byUsername", Security.connected()).first();
-			Task task = Task.findById(taskId);
 			new Submission(contestant, task, sourceCode, Language.CPP, new Date(), SubmissionStatus.QUEUED, 0).save();
 		}
 		catch (IOException e) {}
@@ -57,6 +57,6 @@ public class Submissions extends Controller {
 			}
 			catch (IOException e) {}
 		}
-		redirect("Tasks.index");
+		redirect("Tasks.show", task.id);
 	}
 }
