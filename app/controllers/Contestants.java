@@ -17,6 +17,14 @@ public class Contestants extends Controller {
 			forbidden();
 	}
 	
+	public static void self() {
+		Contestant contestant = Security.getCurrentContestant();
+		if (contestant != null)
+			renderTemplate("Contestants/show.html", contestant);
+		else
+			forbidden();
+	}
+	
 	public static void scoreboard() {
 		List<ScoreboardEntry> scoreboard = Contestant.getScoreboard();
 		render(scoreboard);

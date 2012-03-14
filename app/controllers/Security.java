@@ -11,4 +11,8 @@ public class Security extends Secure.Security {
 		String passwordHash = Contestant.hashPassword(password);
 		return Contestant.find("byUsernameAndPasswordHash", username, passwordHash).first() != null;
 	}
+	
+	static Contestant getCurrentContestant() {
+		return Contestant.find("byUsername", Security.connected()).first();
+	}
 }
