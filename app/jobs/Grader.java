@@ -1,13 +1,6 @@
 package jobs;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.concurrent.TimeoutException;
-
-import javax.persistence.EntityManager;
 
 import models.DataSet;
 import models.Submission;
@@ -15,6 +8,9 @@ import models.SubmissionStatus;
 import models.cmd.CommandLineResult;
 import models.compilers.CompileResult;
 import models.compilers.CompileStatus;
+
+import org.joda.time.DateTime;
+
 import play.db.jpa.JPA;
 import play.jobs.Job;
 import utilities.cmd.CommandLineExecutor;
@@ -24,10 +20,6 @@ import utilities.cmd.IFileHelper;
 import utilities.compilers.Compilers;
 import utilities.compilers.ICompilers;
 
-//TODO: Not sure about what the best way to do this is, since an @OnApplicationStart job 
-//		is required to finish before the webapp starts processing requests. We might want 
-//		to use regular threads instead and kick it off from Bootstrap.
-//@Every("1s")
 public class Grader extends Job implements Runnable {
 	private static final Grader instance = new Grader();
 	private final ICompilers compilers;
@@ -57,6 +49,7 @@ public class Grader extends Job implements Runnable {
 			return;
 		System.out.println("Starting grader");
 		JPA.em().getTransaction().rollback(); // Abort the transaction Play! has started for the job; we'll control our transactions ourselves
+		int count = 0;
 		isRunning = true;
 		shouldStop = false;
 		while (!shouldStop) {
@@ -67,7 +60,8 @@ public class Grader extends Job implements Runnable {
 						break;
 					grade(submission);
 				}
-				System.out.println("Found nothing to grade; waiting for one second");
+				if (++count % 100 == 0)
+					System.out.println("Grader is alive (" + new DateTime().toString("hh:mm:ss") + ")");
 				Thread.sleep(1000);
 			}
 			catch (Exception e) {
