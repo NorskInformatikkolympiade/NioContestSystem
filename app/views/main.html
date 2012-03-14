@@ -10,7 +10,27 @@
         <script src="@{'/public/javascripts/jquery-1.6.4.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
         #{get 'moreScripts' /}
     </head>
-    <body>
-        #{doLayout /}
+    <body class="home blog singular">
+    	<div id="page" class="hfeed">
+    		<header id="branding" role="banner">
+    			<hgroup>
+    				<h1 id="site-title">Norsk informatikkolympiade</h1>
+    				<h2 id="site-description">Konkurransesystem</h2>
+   				</hgroup>
+   				<nav id="access">
+					<div class="menu">
+						<ul>
+							<li class="page_item"><a href="@{Tasks.index()}">Oppgaver</a></li>
+							<li class="page_item"><a href="@{Submissions.submit()}">Innlevering</a></li>
+						</ul>					
+					</div>   				
+   				</nav>
+    		</header>
+    		<div id="main">
+    			<div id="primary">
+        			#{doLayout /}
+       			</div>
+       		</div>
+       	</div>
     </body>
 </html>
