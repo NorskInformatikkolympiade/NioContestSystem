@@ -7,14 +7,14 @@
 <table>
 	<tr>
 		<th>Tidspunkt</th>
-		<th>Deltager</th>
+		#{if isAdmin}<th>Deltager</th>#{/if}
 		<th>Status</th>
 		<th>Poeng</th>
 	</tr>
-	#{list items: task.submissions, as: 'submission'}
+	#{list items: submissions, as: 'submission'}
 		<tr>
 			<td>${submission.submittedAt}</td>
-			<td>${submission.contestant.firstName} ${submission.contestant.lastName}</td>
+			#{if isAdmin}<td>${submission.contestant.firstName} ${submission.contestant.lastName}</td>#{/if}
 			<td>${submission.status}</td>
 			<td>${submission.score}</td>
 		</tr>
