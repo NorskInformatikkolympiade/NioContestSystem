@@ -29,6 +29,7 @@ public class CommandLineExecutor implements ICommandLineExecutor {
 		
 		process.getOutputStream().write(standardInput);
 		process.getOutputStream().flush();
+		process.getOutputStream().close();
 		Worker worker = new Worker(process);
 		worker.start();
 		try {

@@ -151,7 +151,9 @@ public class Grader extends Job implements Runnable {
 	private boolean runCompiledProgramOnDataSet(String programPath, DataSet dataSet) {
 		try {
 			byte[] inputData = fileHelper.readAllBytes(dataSet.getInputFileName());
-			CommandLineResult runResult = commandLineExecutor.execute(new String[] {programPath}, inputData, true, true, 1000);
+			CommandLineResult runResult = commandLineExecutor.execute(
+					new String[] {"e:\\Private\\eclipse-workspace\\NioContestSystem\\ProperRunAs\\bin\\Release\\ProperRunAs.exe", "e:\\Private\\eclipse-workspace\\NioContestSystem\\work", " ", programPath}, 
+					inputData, true, true, 3000);
 			if (runResult.exitCode != 0)
 				return false;
 			String expectedOutput = fileHelper.readAllAsString(dataSet.getOutputFileName());
