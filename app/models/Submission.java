@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -11,7 +13,7 @@ import javax.persistence.ManyToOne;
 import play.db.jpa.Model;
 
 @Entity
-public class Submission extends Model {
+public class Submission extends Model implements Comparable<Submission> {
 	@ManyToOne(optional = false)
 	public Contestant contestant;
 	
@@ -49,5 +51,15 @@ public class Submission extends Model {
 	
 	public static List<Submission> getAll() {
 		return Submission.findAll();
+	}
+
+	@Override
+	public int compareTo(Submission other) {
+		if (submittedAt.before(other.submittedAt))
+			return 1;
+		else if (submittedAt.after(other.submittedAt))
+			return -1;
+		else
+			return 0;
 	}
 }

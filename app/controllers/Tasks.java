@@ -1,6 +1,8 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import models.Contestant;
@@ -29,6 +31,7 @@ public class Tasks extends Controller {
 					submissions.add(submission);
 			}
 		}
+		Collections.sort(submissions);
 		render(task, submissions);
 	}
 }
