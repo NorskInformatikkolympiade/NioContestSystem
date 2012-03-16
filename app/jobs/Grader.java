@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import models.DataSet;
+import models.Language;
 import models.Submission;
 import models.SubmissionStatus;
 import models.cmd.CommandLineResult;
@@ -100,11 +101,15 @@ public class Grader extends Job implements Runnable {
 		}
 		
 		//TODO: Can we customize paths for each developer?
-		CompileResult compileResult = compilers.compile(submission.language, submission.sourceCode, "E:\\Private\\eclipse-workspace\\NioContestSystem\\work", "Program.exe");
-		System.out.println("Compilation done in " + compileResult.duration + " ms. Result: " + compileResult.status);
+		String workingDir = "E:\\Private\\eclipse-workspace\\NioContestSystem\\work";
+		CompileResult compileResult = compilers.compile(submission.language, submission.sourceCode, workingDir, submission.fileName);
 		
 		if (compileResult.status == CompileStatus.OK) {
-			submission.score = runCompiledProgramOnDataSets("E:\\Private\\eclipse-workspace\\NioContestSystem\\work\\Program.exe", submission);
+			System.out.println("Compilation done in " + compileResult.duration + " ms. Result: " + compileResult.status);
+			submission.score = runCompiledProgramOnDataSets(workingDir + "\\" + compileResult.executableFileName, submission);
+		}
+		else {
+			System.out.println("Compilation failed: " + compileResult.status + "; " + compileResult.stdOut + "; " + compileResult.stdErr);
 		}
 		
 		try {
@@ -134,7 +139,7 @@ public class Grader extends Job implements Runnable {
 		for (DataSet dataSet : submission.task.dataSets) {
 			weightSum += dataSet.weight;
 			System.out.print("  Set #" + dataSet.number + " (" + dataSet.weight + ")... ");
-			if (runCompiledProgramOnDataSet(programPath, dataSet)) {
+			if (runCompiledProgramOnDataSet(programPath, dataSet, submission.language)) {
 				successfulWeightSum += dataSet.weight;
 				System.out.println("correct");
 			}
@@ -149,11 +154,16 @@ public class Grader extends Job implements Runnable {
 		return score;
 	}
 	
-	private boolean runCompiledProgramOnDataSet(String programPath, DataSet dataSet) {
+	private boolean runCompiledProgramOnDataSet(String programPath, DataSet dataSet, Language language) {
 		try {
 			byte[] inputData = fileHelper.readAllBytes(dataSet.getInputFileName());
 			CommandLineResult runResult = commandLineExecutor.execute(
-					new String[] {"e:\\Private\\eclipse-workspace\\NioContestSystem\\ProperRunAs\\bin\\Release\\ProperRunAs.exe", "e:\\Private\\eclipse-workspace\\NioContestSystem\\work", " ", programPath, "" + dataSet.task.timeout}, 
+					new String[] {
+						"e:\\Private\\eclipse-workspace\\NioContestSystem\\ProperRunAs\\bin\\Release\\ProperRunAs.exe", 
+						"e:\\Private\\eclipse-workspace\\NioContestSystem\\work", 
+						language.getRunCommand(), 
+						programPath, 
+						dataSet.task.timeout + ""}, 
 					inputData, true, true, dataSet.task.timeout + 3000); // Allow some extra time for ProperRunAs itself (ProperRunAs will enforce the actual time limit on the contestant's program)
 			if (runResult.exitCode != 0) {
 				if (runResult.exitCode == EXCEPTION_EXIT_CODE)

@@ -14,25 +14,23 @@ import models.cmd.CommandLineResult;
 import models.compilers.CompileResult;
 import models.compilers.CompileStatus;
 
-public class CppCompiler extends BaseCompiler implements Compiler {
+public class JavaCompiler extends BaseCompiler implements Compiler {
 	// For testing
-	CppCompiler(long timeout, ICommandLineExecutor commandLineExecutor) {
+	JavaCompiler(long timeout, ICommandLineExecutor commandLineExecutor) {
 		super(timeout, commandLineExecutor);
 	}
 
-	public CppCompiler(long timeout) {
+	public JavaCompiler(long timeout) {
 		this(timeout, new CommandLineExecutor());
 	}
 
 	@Override
 	public CompileResult compile(String source, String folder, String fileName) throws IOException, InterruptedException, TimeoutException {
-		String srcFileName = fileName + ".cpp";
-		writeToFile(source, folder, srcFileName);
+		writeToFile(source, folder, fileName);
 
 		File dir = new File(folder);
-		File srcFile = new File(dir, srcFileName);
-		File execFile = new File(dir, "Program.exe");
-		String[] commandLine = { "g++", srcFile.getAbsolutePath(), "-o", execFile.getAbsolutePath() };
+		File srcFile = new File(dir, fileName);
+		String[] commandLine = { "javac", srcFile.getAbsolutePath() };
 
 		CompileStatus status;
 		CommandLineResult result = commandLineExecutor.execute(commandLine, new byte[0], true, true, timeout);
@@ -41,11 +39,11 @@ public class CppCompiler extends BaseCompiler implements Compiler {
 		} else {
 			status = CompileStatus.CODE_ERROR;
 		}
-		return new CompileResult(status, result.stdOut, result.stdErr, result.duration, execFile.getName());
+		return new CompileResult(status, result.stdOut, result.stdErr, result.duration, fileName.replaceAll("\\.java", ""));
 	}
 
 	@Override
 	public Language getLanguage() {
-		return Language.CPP;
+		return Language.JAVA;
 	}
 }

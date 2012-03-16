@@ -18,8 +18,8 @@ public class ContestantTest extends UnitTest {
         Task otherTask = new Task(2, "Foo", 200, "").save();
         Contestant contestant = new Contestant("Ola", "Nordmann", false).save();
         Contestant otherContestant = new Contestant("Per", "Nilsen", false).save();
-        new Submission(contestant, otherTask, "", Language.CPP, new Date(), SubmissionStatus.COMPLETED, 100).save();
-        new Submission(otherContestant, task, "", Language.CPP, new Date(), SubmissionStatus.COMPLETED, 100).save();
+        new Submission(contestant, otherTask, "", Language.CPP, new Date(), SubmissionStatus.COMPLETED, 100, "main.cpp").save();
+        new Submission(otherContestant, task, "", Language.CPP, new Date(), SubmissionStatus.COMPLETED, 100, "main.cpp").save();
         
         int score = contestant.getScoreForTask(task.id);
         
@@ -30,9 +30,9 @@ public class ContestantTest extends UnitTest {
     public void getScoreForTaskShouldReturnZeroWhenAllTheUsersSubmissionsForThatTaskHaveZeroPoints() {
         Task task = new Task(1, "Banana Republic", 100, "").save();
         Contestant user = new Contestant("Ola", "Nordmann", false).save();
-        new Submission(user, task, "", Language.CPP, new Date(), SubmissionStatus.COMPLETED, 0).save();
-        new Submission(user, task, "", Language.CPP, new Date(), SubmissionStatus.QUEUED, 0).save();
-        new Submission(user, task, "", Language.CPP, new Date(), SubmissionStatus.RUNNING, 0).save();
+        new Submission(user, task, "", Language.CPP, new Date(), SubmissionStatus.COMPLETED, 0, "main.cpp").save();
+        new Submission(user, task, "", Language.CPP, new Date(), SubmissionStatus.QUEUED, 0, "main.cpp").save();
+        new Submission(user, task, "", Language.CPP, new Date(), SubmissionStatus.RUNNING, 0, "main.cpp").save();
         
         int score = user.getScoreForTask(task.id);
         
@@ -43,7 +43,7 @@ public class ContestantTest extends UnitTest {
     public void getScoreForTaskShouldReturnTheSubmissionScoreWhenThereIsOnlyOneSubmission() {
         Task task = new Task(1, "Banana Republic", 100, "").save();
         Contestant contestant = new Contestant("Ola", "Nordmann", false).save();
-        new Submission(contestant, task, "", Language.CPP, new Date(), SubmissionStatus.COMPLETED, 43).save();
+        new Submission(contestant, task, "", Language.CPP, new Date(), SubmissionStatus.COMPLETED, 43, "main.cpp").save();
         
         int score = contestant.getScoreForTask(task.id);
         
@@ -54,12 +54,12 @@ public class ContestantTest extends UnitTest {
     public void getScoreForTaskShouldReturnTheGreatestSubmissionScoreWhenThereAreManySubmissions() {
         Task task = new Task(1, "Banana Republic", 100, "").save();
         Contestant contestant = new Contestant("Ola", "Nordmann", false).save();
-        new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 12, 5, 9), SubmissionStatus.COMPLETED, 0).save();
-        new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 12, 15, 0), SubmissionStatus.COMPLETED, 10).save();
-        new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 12, 23, 18), SubmissionStatus.COMPLETED, 58).save();
-        new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 13, 59, 59), SubmissionStatus.COMPLETED, 29).save();
-        new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 14, 25, 0), SubmissionStatus.RUNNING, 0).save();
-        new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 14, 25, 9), SubmissionStatus.QUEUED, 0).save();
+        new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 12, 5, 9), SubmissionStatus.COMPLETED, 0, "main.cpp").save();
+        new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 12, 15, 0), SubmissionStatus.COMPLETED, 10, "main.cpp").save();
+        new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 12, 23, 18), SubmissionStatus.COMPLETED, 58, "main.cpp").save();
+        new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 13, 59, 59), SubmissionStatus.COMPLETED, 29, "main.cpp").save();
+        new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 14, 25, 0), SubmissionStatus.RUNNING, 0, "main.cpp").save();
+        new Submission(contestant, task, "", Language.CPP, new Date(2012, 2, 5, 14, 25, 9), SubmissionStatus.QUEUED, 0, "main.cpp").save();
         
         int score = contestant.getScoreForTask(task.id);
         
@@ -85,16 +85,16 @@ public class ContestantTest extends UnitTest {
         Task taskThree = new Task(3, "Banana Republic", 200, "").save();
         Contestant contestant = new Contestant("Ola", "Nordmann", false).save();
         Contestant otherContestant = new Contestant("Per", "Hansen", false).save();
-        new Submission(contestant, taskOne, "", Language.CPP, new Date(2012, 2, 5, 12, 5, 9), SubmissionStatus.COMPLETED, 0).save();
-        new Submission(contestant, taskOne, "", Language.CPP, new Date(2012, 2, 5, 12, 15, 0), SubmissionStatus.COMPLETED, 10).save();
-        new Submission(contestant, taskTwo, "", Language.CPP, new Date(2012, 2, 5, 12, 23, 18), SubmissionStatus.COMPLETED, 58).save();
-        new Submission(contestant, taskTwo, "", Language.CPP, new Date(2012, 2, 5, 13, 59, 59), SubmissionStatus.COMPLETED, 29).save();
-        new Submission(contestant, taskThree, "", Language.CPP, new Date(2012, 2, 5, 14, 25, 0), SubmissionStatus.COMPLETED, 47).save();
-        new Submission(contestant, taskThree, "", Language.CPP, new Date(2012, 2, 5, 14, 25, 0), SubmissionStatus.COMPLETED, 23).save();
-        new Submission(contestant, taskThree, "", Language.CPP, new Date(2012, 2, 5, 14, 25, 0), SubmissionStatus.RUNNING, 1).save();
-        new Submission(contestant, taskOne, "", Language.CPP, new Date(2012, 2, 5, 14, 25, 9), SubmissionStatus.RUNNING, 0).save();
-        new Submission(contestant, taskOne, "", Language.CPP, new Date(2012, 2, 5, 14, 25, 9), SubmissionStatus.QUEUED, 0).save();
-        new Submission(otherContestant, taskOne, "", Language.CPP, new Date(2012, 2, 5, 12, 5, 9), SubmissionStatus.COMPLETED, 50).save();
+        new Submission(contestant, taskOne, "", Language.CPP, new Date(2012, 2, 5, 12, 5, 9), SubmissionStatus.COMPLETED, 0, "main.cpp").save();
+        new Submission(contestant, taskOne, "", Language.CPP, new Date(2012, 2, 5, 12, 15, 0), SubmissionStatus.COMPLETED, 10, "main.cpp").save();
+        new Submission(contestant, taskTwo, "", Language.CPP, new Date(2012, 2, 5, 12, 23, 18), SubmissionStatus.COMPLETED, 58, "main.cpp").save();
+        new Submission(contestant, taskTwo, "", Language.CPP, new Date(2012, 2, 5, 13, 59, 59), SubmissionStatus.COMPLETED, 29, "main.cpp").save();
+        new Submission(contestant, taskThree, "", Language.CPP, new Date(2012, 2, 5, 14, 25, 0), SubmissionStatus.COMPLETED, 47, "main.cpp").save();
+        new Submission(contestant, taskThree, "", Language.CPP, new Date(2012, 2, 5, 14, 25, 0), SubmissionStatus.COMPLETED, 23, "main.cpp").save();
+        new Submission(contestant, taskThree, "", Language.CPP, new Date(2012, 2, 5, 14, 25, 0), SubmissionStatus.RUNNING, 1, "main.cpp").save();
+        new Submission(contestant, taskOne, "", Language.CPP, new Date(2012, 2, 5, 14, 25, 9), SubmissionStatus.RUNNING, 0, "main.cpp").save();
+        new Submission(contestant, taskOne, "", Language.CPP, new Date(2012, 2, 5, 14, 25, 9), SubmissionStatus.QUEUED, 0, "main.cpp").save();
+        new Submission(otherContestant, taskOne, "", Language.CPP, new Date(2012, 2, 5, 12, 5, 9), SubmissionStatus.COMPLETED, 50, "main.cpp").save();
         
         int score = contestant.getTotalScore();
         

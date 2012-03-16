@@ -61,8 +61,8 @@ public class GraderTest extends UnitTest {
 	
 	@Test
 	public void shouldInvokeCompilerWithDataFromSubmission() {
-		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0).save();
-		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.OK, "", "", 1000));
+		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0, "main.cpp").save();
+		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.OK, "", "", 1000, "main.exe"));
 		flushAndCommit();
 		
 		grader.grade(submission);
@@ -72,8 +72,8 @@ public class GraderTest extends UnitTest {
 	
 	@Test
 	public void shouldSetStatusToCompletedButNotInvokeCommandLineExecutorWhenCompilationFailsBecauseOfCodeError() {
-		final Submission submission = new Submission(contestant, task, "int main() { return a; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0).save();
-		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.CODE_ERROR, "", "", 1000));
+		final Submission submission = new Submission(contestant, task, "int main() { return a; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0, "main.cpp").save();
+		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.CODE_ERROR, "", "", 1000, "main.exe"));
 		flushAndCommit();
 		
 		grader.grade(submission);
@@ -85,8 +85,8 @@ public class GraderTest extends UnitTest {
 
 	@Test
 	public void shouldSetStatusToCompletedButNotInvokeCommandLineExecutorWhenCompilationFailsBecauseOfInternalError() {
-		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0).save();
-		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.INTERNAL_ERROR, "", "", 1000));
+		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0, "main.cpp").save();
+		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.INTERNAL_ERROR, "", "", 1000, "main.exe"));
 		flushAndCommit();
 		
 		grader.grade(submission);
@@ -98,8 +98,8 @@ public class GraderTest extends UnitTest {
 	
 	@Test
 	public void shouldSetStatusToCompletedButNotInvokeCommandLineExecutorWhenCompilationFailsBecauseOfTimeout() {
-		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0).save();
-		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.TIMEOUT, "", "", 10000));
+		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0, "main.cpp").save();
+		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.TIMEOUT, "", "", 10000, "main.exe"));
 		flushAndCommit();
 		
 		grader.grade(submission);
@@ -111,13 +111,13 @@ public class GraderTest extends UnitTest {
 	
 	@Test
 	public void shouldRunCompiledProgramAgainstAllTaskDataSetsAndSetStatusToCompletedWhenCompilationSucceeds() throws TimeoutException, InterruptedException, IOException {
-		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0).save();
+		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0, "main.cpp").save();
 		byte[][] inputFiles = new byte[][] {
 			new byte[]{65, 66, 67},
 			new byte[]{97, 98, 99},
 			new byte[]{105, 102}
 		};
-		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.OK, "", "", 1000));
+		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.OK, "", "", 1000, "main.exe"));
 		when(fileHelperMock.readAllBytes("C:/dataSets/1.in")).thenReturn(inputFiles[0]);
 		when(fileHelperMock.readAllBytes("C:/dataSets/2.in")).thenReturn(inputFiles[1]);
 		when(fileHelperMock.readAllBytes("C:/dataSets/3.in")).thenReturn(inputFiles[2]);
@@ -138,8 +138,8 @@ public class GraderTest extends UnitTest {
 	
 	@Test
 	public void shouldAssignPointsForEachDataSetWhereTheProgramReturnsSuccessfullyAndProducesTheExpectedOutput() throws TimeoutException, InterruptedException, IOException {
-		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0).save();
-		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.OK, "", "", 1000));
+		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0, "main.cpp").save();
+		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.OK, "", "", 1000, "main.exe"));
 		when(fileHelperMock.readAllBytes(anyString())).thenReturn(new byte[0]);
 		when(fileHelperMock.readAllAsString("C:/dataSets/1.out")).thenReturn("ab\ncde fg\n");
 		when(fileHelperMock.readAllAsString("C:/dataSets/2.out")).thenReturn("qw\nsd tyu\n");

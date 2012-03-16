@@ -4,5 +4,6 @@ public enum CompileStatus {
   OK,
   CODE_ERROR,
   INTERNAL_ERROR,
-  TIMEOUT
+  TIMEOUT,
+  UNKNOWN_LANGUAGE
 }

@@ -27,8 +27,9 @@ public class Compilers implements ICompilers {
 	private Compilers() { // Disallow evil constructors
 		compilers = new ArrayList<Compiler>();
 		compilers.add(new CppCompiler(TIME_LIMIT));
-		// compilers.add(new CCompiler());
-		// compilers.add(new JavaCompiler());
+		compilers.add(new CCompiler(TIME_LIMIT));
+		compilers.add(new JavaCompiler(TIME_LIMIT));
+		compilers.add(new PythonCompiler(TIME_LIMIT));
 	}
 
 	/**
@@ -55,16 +56,16 @@ public class Compilers implements ICompilers {
 					return compiler.compile(source, folder, fileName);
 				} catch (IOException e) {
 					e.printStackTrace();
-					return new CompileResult(CompileStatus.INTERNAL_ERROR, null, null, -1);
+					return new CompileResult(CompileStatus.INTERNAL_ERROR, null, null, -1, null);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-					return new CompileResult(CompileStatus.INTERNAL_ERROR, null, null, -1);
+					return new CompileResult(CompileStatus.INTERNAL_ERROR, null, null, -1, null);
 				} catch (TimeoutException e) {
 					e.printStackTrace();
-					return new CompileResult(CompileStatus.TIMEOUT, null, null, -1);
+					return new CompileResult(CompileStatus.TIMEOUT, null, null, -1, null);
 				}
 			}
 		}
-		return null;
+		return new CompileResult(CompileStatus.UNKNOWN_LANGUAGE, null, null, -1, null);
 	}
 }

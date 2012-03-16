@@ -14,25 +14,25 @@ import models.cmd.CommandLineResult;
 import models.compilers.CompileResult;
 import models.compilers.CompileStatus;
 
-public class CppCompiler extends BaseCompiler implements Compiler {
+public class CCompiler extends BaseCompiler implements Compiler {
 	// For testing
-	CppCompiler(long timeout, ICommandLineExecutor commandLineExecutor) {
+	CCompiler(long timeout, ICommandLineExecutor commandLineExecutor) {
 		super(timeout, commandLineExecutor);
 	}
 
-	public CppCompiler(long timeout) {
+	public CCompiler(long timeout) {
 		this(timeout, new CommandLineExecutor());
 	}
 
 	@Override
 	public CompileResult compile(String source, String folder, String fileName) throws IOException, InterruptedException, TimeoutException {
-		String srcFileName = fileName + ".cpp";
+		String srcFileName = fileName + ".c";
 		writeToFile(source, folder, srcFileName);
 
 		File dir = new File(folder);
 		File srcFile = new File(dir, srcFileName);
 		File execFile = new File(dir, "Program.exe");
-		String[] commandLine = { "g++", srcFile.getAbsolutePath(), "-o", execFile.getAbsolutePath() };
+		String[] commandLine = { "gcc", srcFile.getAbsolutePath(), "-o", execFile.getAbsolutePath() };
 
 		CompileStatus status;
 		CommandLineResult result = commandLineExecutor.execute(commandLine, new byte[0], true, true, timeout);
@@ -46,6 +46,6 @@ public class CppCompiler extends BaseCompiler implements Compiler {
 
 	@Override
 	public Language getLanguage() {
-		return Language.CPP;
+		return Language.C;
 	}
 }

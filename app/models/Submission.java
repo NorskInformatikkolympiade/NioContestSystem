@@ -33,7 +33,10 @@ public class Submission extends Model {
 	@Column(nullable = false)
 	public int score;
 	
-	public Submission(Contestant contestant, Task task, String sourceCode, Language language, Date submittedAt, SubmissionStatus status, int score) {
+	@Column(nullable = false)
+	public String fileName;
+	
+	public Submission(Contestant contestant, Task task, String sourceCode, Language language, Date submittedAt, SubmissionStatus status, int score, String fileName) {
 		this.contestant = contestant;
 		this.task = task;
 		this.sourceCode = sourceCode;
@@ -41,6 +44,7 @@ public class Submission extends Model {
 		this.submittedAt = submittedAt;
 		this.status = status;
 		this.score = score;
+		this.fileName = fileName;
 	}
 	
 	public static List<Submission> getAll() {

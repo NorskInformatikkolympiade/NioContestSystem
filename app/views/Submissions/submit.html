@@ -7,6 +7,11 @@
 			<option value="${task.id}">${task.number} - ${task.title}</option>
 		#{/list}
 	</select>
+	<select name="language">
+		#{list items: languages, as: 'language'}
+			<option value="${language}">${language.getName()}</option>
+		#{/list}	
+	</select>
     <input type="file" name="sourceCodeFile" />
     <input type="submit" value="Lever" />
 #{/}

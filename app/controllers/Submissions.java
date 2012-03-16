@@ -29,16 +29,22 @@ public class Submissions extends Controller {
 			forbidden();
 		else {
 			List<Task> tasks = Task.getAll();
-			render(tasks);
+			Language[] languages = Language.values();
+			render(tasks, languages);
 		}
 	}
 	
-	public static void handleSubmission(long taskId, File sourceCodeFile) {
+	public static void handleSubmission(long taskId, String language, File sourceCodeFile) {
 		if (Security.getCurrentContestant().isAdmin) {
 			forbidden();
 			return;
 		}
+		if (!sourceCodeFile.getName().matches("^[a-zA-Z0-9.]+$")) {
+			forbidden("Filnavnet kan bare inneholde tall, bokstaver og understrek");
+			return;
+		}
 		
+		Language lang = Language.valueOf(language);
 		Task task = Task.findById(taskId);
 		FileInputStream stream = null;
 		try {
@@ -47,7 +53,7 @@ public class Submissions extends Controller {
 			MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
 			String sourceCode = Charset.forName("UTF-8").decode(bb).toString();
 			Contestant contestant = Contestant.find("byUsername", Security.connected()).first();
-			new Submission(contestant, task, sourceCode, Language.CPP, new Date(), SubmissionStatus.QUEUED, 0).save();
+			new Submission(contestant, task, sourceCode, lang, new Date(), SubmissionStatus.QUEUED, 0, sourceCodeFile.getName()).save();
 		}
 		catch (IOException e) {}
 		finally {
