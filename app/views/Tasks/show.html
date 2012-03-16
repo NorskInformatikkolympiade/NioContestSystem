@@ -8,6 +8,7 @@
 	<tr>
 		<th>Tidspunkt</th>
 		#{if isAdmin}<th>Deltager</th>#{/if}
+		<th>Språk</th>
 		<th>Status</th>
 		<th>Poeng</th>
 	</tr>
@@ -15,26 +16,29 @@
 		<tr>
 			<td>${submission.submittedAt}</td>
 			#{if isAdmin}<td>${submission.contestant.firstName} ${submission.contestant.lastName}</td>#{/if}
+			<td>${submission.language.getName()}</td>
 			<td>${submission.status}</td>
 			<td>${submission.score}</td>
 		</tr>
 	#{/list}
 </table>
 
-<h2>Datasett</h2>
-<table>
-	<tr>
-		<th>Nr.</th>
-		<th>Vekt</th>
-		<th>Inputfil</th>
-		<th>Outputfil</th>
-	</tr>
-	#{list items: task.dataSets, as: 'dataSet'}
+#{if isAdmin}
+	<h2>Datasett</h2>
+	<table>
 		<tr>
-			<td>${dataSet.number}</td>
-			<td>${dataSet.weight}</td>
-			<td>${dataSet.inputFileName}</td>
-			<td>${dataSet.outputFileName}</td>
+			<th>Nr.</th>
+			<th>Vekt</th>
+			<th>Inputfil</th>
+			<th>Outputfil</th>
 		</tr>
-	#{/list}
-</table>
+		#{list items: task.dataSets, as: 'dataSet'}
+			<tr>
+				<td>${dataSet.number}</td>
+				<td>${dataSet.weight}</td>
+				<td>${dataSet.inputFileName}</td>
+				<td>${dataSet.outputFileName}</td>
+			</tr>
+		#{/list}
+	</table>
+#{/if}
