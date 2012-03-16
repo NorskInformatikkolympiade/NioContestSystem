@@ -14,6 +14,7 @@ public class Task extends Model {
 	public int number;
 	public String title;
 	public int weight;
+	public int timeout; // In milliseconds
 	public String dataSetPath;
 	
 	@OneToMany(mappedBy = "task", cascade = CascadeType.ALL)

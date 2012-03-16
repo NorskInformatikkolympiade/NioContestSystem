@@ -5,24 +5,28 @@ Task(heisaturen):
     number: 1
     title: Heisaturen
     weight: 70
+    timeout: 1000
     dataSetPath: E:\Private\eclipse-workspace\NioContestSystem\sets\1
 
 Task(kast):
     number: 2
     title: Skrått kast med luftmostand
     weight: 100
+    timeout: 2000
     dataSetPath: /home/nio/kast/data
 
 Task(banana):
     number: 3
     title: Banana Republic
     weight: 100
+    timeout: 3000
     dataSetPath: /home/nio/br/sets
 
 Task(thailand):
     number: 4
     title: Thailand
     weight: 200
+    timeout: 4000
     dataSetPath: /home/nio/thailand
 
 Contestant(aasmund):

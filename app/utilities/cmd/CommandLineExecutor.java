@@ -10,6 +10,8 @@ import java.util.concurrent.TimeoutException;
 import models.cmd.CommandLineResult;
 
 public class CommandLineExecutor implements ICommandLineExecutor {
+	private final int TIMEOUT_EXIT_CODE = -42;
+	
 	public CommandLineResult execute(final String[] commandLine,
 									 byte[] standardInput,
 									 final boolean captureOutput, 
@@ -34,7 +36,8 @@ public class CommandLineExecutor implements ICommandLineExecutor {
 		worker.start();
 		try {
 			worker.join(timeout); // Wait <= this many ms for worker thread to finish
-			if (worker.exit == null) {
+			System.out.println(worker.exit);
+			if (worker.exit == null || worker.exit == TIMEOUT_EXIT_CODE) {
 				throw new TimeoutException();
 			}
 		}

@@ -28,6 +28,7 @@ public class Grader extends Job implements Runnable {
 	private boolean shouldStop;
 	private boolean isRunning;
 	static boolean disableGradingDuringTesting;
+	private final int EXCEPTION_EXIT_CODE = -43;
 	
 	private Grader() {
 		this(Compilers.instance(), new CommandLineExecutor(), new FileHelper());
@@ -152,15 +153,18 @@ public class Grader extends Job implements Runnable {
 		try {
 			byte[] inputData = fileHelper.readAllBytes(dataSet.getInputFileName());
 			CommandLineResult runResult = commandLineExecutor.execute(
-					new String[] {"e:\\Private\\eclipse-workspace\\NioContestSystem\\ProperRunAs\\bin\\Release\\ProperRunAs.exe", "e:\\Private\\eclipse-workspace\\NioContestSystem\\work", " ", programPath}, 
-					inputData, true, true, 3000);
-			if (runResult.exitCode != 0)
+					new String[] {"e:\\Private\\eclipse-workspace\\NioContestSystem\\ProperRunAs\\bin\\Release\\ProperRunAs.exe", "e:\\Private\\eclipse-workspace\\NioContestSystem\\work", " ", programPath, "" + dataSet.task.timeout}, 
+					inputData, true, true, dataSet.task.timeout + 3000); // Allow some extra time for ProperRunAs itself (ProperRunAs will enforce the actual time limit on the contestant's program)
+			if (runResult.exitCode != 0) {
+				if (runResult.exitCode == EXCEPTION_EXIT_CODE)
+					System.out.println("Exception in ProperRunAs: " + runResult.stdOut);
 				return false;
+			}
 			String expectedOutput = fileHelper.readAllAsString(dataSet.getOutputFileName());
 			return runResult.stdOut != null && runResult.stdOut.equals(expectedOutput);
 		}
 		catch (TimeoutException e) {
-			e.printStackTrace();
+			System.out.println("Timeout");
 			return false;
 		}
 		catch (IOException e) {
