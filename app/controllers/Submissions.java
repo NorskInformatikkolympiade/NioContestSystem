@@ -39,7 +39,7 @@ public class Submissions extends Controller {
 			forbidden();
 			return;
 		}
-		if (!sourceCodeFile.getName().matches("^[a-zA-Z0-9.]+$")) {
+		if (!sourceCodeFile.getName().matches("^[a-zA-Z0-9_.]+$")) {
 			forbidden("Filnavnet kan bare inneholde tall, bokstaver og understrek");
 			return;
 		}
