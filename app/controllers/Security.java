@@ -14,7 +14,6 @@ public class Security extends Secure.Security {
 		Contestant current = getCurrentContestant();
 		renderArgs.put("currentContestant", current);
 		renderArgs.put("isAdmin", current != null && current.isAdmin);
-		System.out.println(current != null ? current.getFullName() : "null");
 	}
 	
 	static boolean authenticate(String username, String password) {
