@@ -106,7 +106,7 @@ public class Grader extends Job implements Runnable {
 		
 		if (compileResult.status == CompileStatus.OK) {
 			System.out.println("Compilation done in " + compileResult.duration + " ms. Result: " + compileResult.status);
-			submission.score = runCompiledProgramOnDataSets(workingDir + "\\" + compileResult.executableFileName, submission);
+			submission.score = runCompiledProgramOnDataSets(compileResult.executableFileName, submission);
 		}
 		else {
 			System.out.println("Compilation failed: " + compileResult.status + "; " + compileResult.stdOut + "; " + compileResult.stdErr);
