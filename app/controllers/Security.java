@@ -18,8 +18,11 @@ public class Security extends Secure.Security {
 	}
 	
 	static boolean authenticate(String username, String password) {
-		String passwordHash = Contestant.hashPassword(password);
-		return Contestant.find("byUsernameAndPasswordHash", username, passwordHash).first() != null;
+		Contestant contestant = Contestant.find("byUsername", username).first();
+		if (contestant == null)
+			return false;
+		String passwordHash = Contestant.hashPassword(password, contestant.passwordSalt);
+		return passwordHash.equals(contestant.passwordHash);
 	}
 	
 	static Contestant getCurrentContestant() {

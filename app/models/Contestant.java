@@ -26,6 +26,7 @@ public class Contestant extends Model {
 	public String username;
 	
 	public String passwordHash;
+	public String passwordSalt;
 	public String firstName;
 	public String lastName;
 	public boolean isAdmin;
@@ -97,11 +98,13 @@ public class Contestant extends Model {
 		return scoreboard;
 	}
 	
-	public static String hashPassword(String password) {
+	public static String hashPassword(String password, String salt) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-1");
-			byte[] passwordBytes = Charset.forName("UTF-8").encode(password).array();
-			byte[] hashBytes = md.digest(passwordBytes);
+			ByteBuffer encoded = Charset.forName("UTF-8").encode(password + salt);
+			byte[] saltedPasswordBytes = new byte[encoded.limit()];
+			encoded.get(saltedPasswordBytes, 0, saltedPasswordBytes.length);
+			byte[] hashBytes = md.digest(saltedPasswordBytes);
 			Formatter formatter = new Formatter();
 		    for (byte b : hashBytes) {
 		        formatter.format("%02x", b);

@@ -27,24 +27,27 @@ Task(thailand):
 
 Contestant(aasmund):
     username: aasmund
-    passwordHash: a9993e364706816aba3e25717850c26c9cd0d89d
     firstName: Åsmund
     lastName: Eldhuset
-    isAdmin: false
+    isAdmin: true
+    passwordSalt: xQXnEGjO
+    passwordHash: e79be91a10e962643d1835d0c5fcff3e6cf60422
 
 Contestant(geir):
     username: geir
-    passwordHash: 924f61661a3472da74307a35f2c8d22e07e84a4d
-    firstName: Geir K.
+    firstName: Geir
     lastName: Engdahl
     isAdmin: true
+    passwordSalt: MzB22Nsb
+    passwordHash: 703a25308b659917a9c23564d31d957d2e0c4c51
 
-Contestant(fredrik):
-    username: fredrik
-    passwordHash: 5af13954a67eab2973b4ade01186602dd8739787
-    firstName: Fredrik
-    lastName: Carlsen
-    isAdmin: false
+Contestant(markus):
+    username: markus
+    firstName: Markus
+    lastName: Dregi
+    isAdmin: true
+    passwordSalt: b82F7lbR
+    passwordHash: 24390df88495c2c2b01e347a90cfeb2a31b9f6b3
 
 DataSet(t1d1):
     task: heisaturen 
