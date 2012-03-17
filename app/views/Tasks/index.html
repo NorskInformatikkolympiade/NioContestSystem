@@ -1,17 +1,21 @@
 #{extends 'main.html' /}
 #{set title:'Oppgaver' /}
 
+<h2>Oppgaver</h2>
+
 <table>
 	<tr>
 		<th>Nr.</th>
 		<th>Tittel</th>
-		<th>Poeng</th>
+		<th>Poengverdi</th>
+		<th>Tidsbegrensning (ms)</th>
 	</tr>
 	#{list items: tasks, as: 'task'}
 		<tr>
 			<td>${task.number}</td>
 			<td><a href="@{Tasks.show(task.id)}">${task.title}</a></td>
 			<td>${task.weight}</td>
+			<td>${task.timeout}</td>
 		</tr>
 	#{/list}
 </table>

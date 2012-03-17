@@ -335,3 +335,39 @@ a:hover {
 #access .current_page_ancestor > a {
 	font-weight: bold;
 }
+
+
+
+
+
+th {
+	font-weight: bold;
+	padding: 0px 8px;
+}
+
+td {
+	padding: 0px 8px;
+}
+
+h1 {
+	font-weight: bold;
+	font-size: 3em;
+}
+
+h2 {
+	font-weight: bold;
+	font-size: 1.5em;
+}
+
+h3 {
+	font-weight: bold;
+	font-size: 1.25em;
+}
+
+#main {
+	padding: 16px;
+}
+
+#branding hgroup {
+	padding: 16px;
+}

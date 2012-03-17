@@ -1,6 +1,8 @@
 #{extends 'main.html' /}
 #{set title:'Lever besvarelse' /}
 
+<h2>Innlevering</h2>
+
 #{form @handleSubmission(), enctype:'multipart/form-data'}
 	<select name="taskId">
 		#{list items: tasks, as: 'task'}
