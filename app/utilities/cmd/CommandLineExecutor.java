@@ -37,7 +37,7 @@ public class CommandLineExecutor implements ICommandLineExecutor {
 		try {
 			worker.join(timeout); // Wait <= this many ms for worker thread to finish
 			if (worker.exit == null || worker.exit == TIMEOUT_EXIT_CODE) {
-				throw new TimeoutException();
+				throw new TimeoutException("" + worker.exit);
 			}
 		}
 		catch (InterruptedException ex) {

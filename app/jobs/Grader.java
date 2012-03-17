@@ -107,14 +107,16 @@ public class Grader extends Job implements Runnable {
 		if (compileResult.status == CompileStatus.OK) {
 			System.out.println("Compilation done in " + compileResult.duration + " ms. Result: " + compileResult.status);
 			submission.score = runCompiledProgramOnDataSets(compileResult.executableFileName, submission);
+			submission.status = SubmissionStatus.COMPLETED;
 		}
 		else {
-			System.out.println("Compilation failed: " + compileResult.status + "; " + compileResult.stdOut + "; " + compileResult.stdErr);
+			System.out.println("Compilation failed: " + compileResult.status);
+			submission.status = SubmissionStatus.COMPILATION_FAILED;
+			submission.compilationErrors = compileResult.stdErr;
 		}
 		
 		try {
 			JPA.em().getTransaction().begin();
-			submission.status = SubmissionStatus.COMPLETED;
 			submission.save();
 			JPA.em().flush();
 			JPA.em().getTransaction().commit();
@@ -174,7 +176,7 @@ public class Grader extends Job implements Runnable {
 			return runResult.stdOut != null && runResult.stdOut.equals(expectedOutput);
 		}
 		catch (TimeoutException e) {
-			System.out.println("Timeout");
+			System.out.println("Timeout: " + e.getMessage());
 			return false;
 		}
 		catch (IOException e) {

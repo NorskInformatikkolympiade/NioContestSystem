@@ -1,11 +1,11 @@
 #{extends 'main.html' /}
 #{set title:'Deltager: ' + contestant.getFullName() /}
 
-<h1>Deltager: ${contestant.getFullName()}</h1>
+<h2>Deltager: ${contestant.getFullName()}</h2>
 
-<p>Poengsum: ${contestant.getTotalScore()}</p>
+<p><strong>Poengsum: ${contestant.getTotalScore()}</strong></p>
 
-<h2>Besvarelser</h2>
+<h3>Besvarelser</h3>
 <table>
 	<tr>
 		<th>Tidspunkt</th>
@@ -13,14 +13,16 @@
 		<th>Språk</th>
 		<th>Status</th>
 		<th>Poeng</th>
+		<th>Kompilatorfeilmeldinger</th>
 	</tr>
 	#{list items: contestant.submissions, as: 'submission'}
 		<tr>
 			<td>${submission.submittedAt}</td>
 			<td>${submission.task.title}</td>
 			<td>${submission.language.getName()}</td>
-			<td>${submission.status}</td>
+			<td>${submission.status.getName()}</td>
 			<td>${submission.score}</td>
+			<td>${submission.compilationErrors}</td>
 		</tr>
 	#{/list}
 </table>

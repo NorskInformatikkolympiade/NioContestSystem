@@ -38,6 +38,9 @@ public class Submission extends Model implements Comparable<Submission> {
 	@Column(nullable = false)
 	public String fileName;
 	
+	@Column(columnDefinition = "text null")
+	public String compilationErrors;
+	
 	public Submission(Contestant contestant, Task task, String sourceCode, Language language, Date submittedAt, SubmissionStatus status, int score, String fileName) {
 		this.contestant = contestant;
 		this.task = task;

@@ -1,9 +1,9 @@
 #{extends 'main.html' /}
 #{set title:'Oppgave ' + task.number + ': ' + task.title /}
 
-<h1>Oppgave ${task.number}: ${task.title}</h1>
+<h2>Oppgave ${task.number}: ${task.title}</h2>
 
-<h2>Besvarelser</h2>
+<h3>Besvarelser</h3>
 <table>
 	<tr>
 		<th>Tidspunkt</th>
@@ -11,14 +11,16 @@
 		<th>Språk</th>
 		<th>Status</th>
 		<th>Poeng</th>
+		<th>Kompilatorfeilmeldinger</th>
 	</tr>
 	#{list items: submissions, as: 'submission'}
 		<tr>
 			<td>${submission.submittedAt}</td>
 			#{if isAdmin}<td>${submission.contestant.firstName} ${submission.contestant.lastName}</td>#{/if}
 			<td>${submission.language.getName()}</td>
-			<td>${submission.status}</td>
+			<td>${submission.status.getName()}</td>
 			<td>${submission.score}</td>
+			<td>${submission.compilationErrors}</td>
 		</tr>
 	#{/list}
 </table>
