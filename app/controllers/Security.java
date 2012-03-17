@@ -25,6 +25,11 @@ public class Security extends Secure.Security {
 	}
 	
 	static Contestant getCurrentContestant() {
-		return Contestant.find("byUsername", Security.connected()).first();
+		Contestant emptyContestant = new Contestant("", "", false);
+		String username = Security.connected();
+		if (username == null)
+			return emptyContestant;
+		Contestant contestant = Contestant.find("byUsername", username).first();
+		return contestant == null ? emptyContestant : contestant;
 	}
 }
