@@ -67,6 +67,7 @@ public class Contestant extends Model {
 	
 	public static List<ScoreboardEntry> getScoreboard() {
 		List<ScoreboardEntry> scoreboard = new ArrayList<ScoreboardEntry>();
+		List<Task> tasks = Task.getAll();
 		for (Contestant contestant : Contestant.getAll()) {
 			if (contestant.isAdmin)
 				continue;
@@ -74,6 +75,8 @@ public class Contestant extends Model {
 			entry.contestantId = contestant.id;
 			entry.name = contestant.getFullName();
 			entry.score = contestant.getTotalScore();
+			for (Task task : tasks)
+				entry.taskScores.add(contestant.getScoreForTask(task.id));
 			scoreboard.add(entry);
 		}
 		

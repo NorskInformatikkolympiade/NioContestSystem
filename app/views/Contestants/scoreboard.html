@@ -7,13 +7,19 @@
 	<tr>
 		<th>Nr.</th>
 		<th>Navn</th>
-		<th>Poeng</th>
+		#{list items: tasks, as: 'task'}
+			<th>Oppg. ${task.number}</th>
+		#{/list}
+		<th>Totalt</th>
 	</tr>
 	#{list items: scoreboard, as: 'entry'}
 		<tr>
 			<td>${entry.position}</td>
 			<td><a href="@{Contestants.show(entry.contestantId)}">${entry.name}</a></td>
-			<td>${entry.score}</td>
+			#{list items: entry.taskScores, as: 'taskScore'}
+				<td class="right">${taskScore}</td>
+			#{/list}
+			<td class="right">${entry.score}</td>
 		</tr>
 	#{/list}
 </table>

@@ -6,6 +6,7 @@ import java.util.List;
 
 import models.Contestant;
 import models.Submission;
+import models.Task;
 import play.mvc.Controller;
 import play.mvc.With;
 import viewmodels.ScoreboardEntry;
@@ -14,6 +15,8 @@ import viewmodels.ScoreboardEntry;
 public class Contestants extends Controller {
 	public static void show(Long id) {
 		Contestant contestant = Contestant.findById(id);
+		if (contestant == null)
+			notFound("Det finnes ingen deltager med id " + id + ".");
 		if (contestant.username.equals(Security.connected()) || Security.getCurrentContestant().isAdmin) {
 			Collections.sort(contestant.submissions);
 			render(contestant);
@@ -35,7 +38,8 @@ public class Contestants extends Controller {
 	public static void scoreboard() {
 		if (Security.getCurrentContestant().isAdmin) {
 			List<ScoreboardEntry> scoreboard = Contestant.getScoreboard();
-			render(scoreboard);
+			List<Task> tasks = Task.getAll();
+			render(scoreboard, tasks);
 		}
 		else
 			forbidden();
