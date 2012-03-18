@@ -164,14 +164,6 @@ blockquote cite {
 	letter-spacing: 0.05em;
 	text-transform: uppercase;
 }
-pre {
-	background: #f4f4f4;
-	font: 13px "Courier 10 Pitch", Courier, monospace;
-	line-height: 1.5;
-	margin-bottom: 1.625em;
-	overflow: auto;
-	padding: 0.75em 1.625em;
-}
 code, kbd {
 	font: 13px Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
 }
@@ -370,4 +362,9 @@ h3 {
 
 #branding hgroup {
 	padding: 16px;
+}
+
+pre {
+	font-family: monospace;
+	line-height: 1.15;
 }

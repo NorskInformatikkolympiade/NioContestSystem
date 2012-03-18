@@ -1,0 +1,42 @@
+#{extends 'main.html' /}
+#{set title:'Besvarelse #' + submission.id /}
+
+<h2>Besvarelse #${submission.id}</h2>
+
+<table>
+	#{if isAdmin}
+		<tr>
+			<th>Deltager:</th>
+			<td>${submission.contestant.getFullName()}</td>
+		</tr>
+	#{/if}
+	<tr>
+		<th>Tidspunkt:</th>
+		<td>${submission.submittedAt}</td>
+	</tr>
+	<tr>
+		<th>Språk:</th>
+		<td>${submission.language.getName()}</td>
+	</tr>
+	<tr>
+		<th>Status:</th>
+		<td>${submission.status.getName()}</td>
+	</tr>
+	<tr>
+		<th>Poeng:</th>
+		<td>${submission.score}</td>
+	</tr>
+</table>
+
+<h3>Kompilatorfeilmeldinger</h3>
+<p>
+	#{list items: submission.getCompilationErrorLines(), as: 'errorLine'}
+		${errorLine}<br/>
+	#{/list}
+	#{else}
+		(ingen)
+	#{/else}
+</p>
+
+<h3>Kildekode</h3>
+<pre>${submission.sourceCode}</pre>

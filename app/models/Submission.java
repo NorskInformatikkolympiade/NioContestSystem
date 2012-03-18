@@ -55,7 +55,13 @@ public class Submission extends Model implements Comparable<Submission> {
 	public static List<Submission> getAll() {
 		return Submission.findAll();
 	}
-
+	
+	public String[] getCompilationErrorLines() {
+		if (compilationErrors == null)
+			return new String[0];
+		return compilationErrors.split("\n");
+	}
+	
 	@Override
 	public int compareTo(Submission other) {
 		if (submittedAt.before(other.submittedAt))

@@ -15,8 +15,8 @@
 	</tr>
 	#{list items: submissions, as: 'submission'}
 		<tr>
-			<td>${submission.submittedAt}</td>
-			#{if isAdmin}<td>${submission.contestant.firstName} ${submission.contestant.lastName}</td>#{/if}
+			<td><a href="@{Submissions.show(submission.id)}">${submission.submittedAt}</a></td>
+			#{if isAdmin}<td>${submission.contestant.getFullName()}</td>#{/if}
 			<td>${submission.language.getName()}</td>
 			<td>${submission.status.getName()}</td>
 			<td>${submission.score}</td>

@@ -17,7 +17,7 @@
 	</tr>
 	#{list items: contestant.submissions, as: 'submission'}
 		<tr>
-			<td>${submission.submittedAt}</td>
+			<td><a href="@{Submissions.show(submission.id)}">${submission.submittedAt}</td>
 			<td>${submission.task.title}</td>
 			<td>${submission.language.getName()}</td>
 			<td>${submission.status.getName()}</td>

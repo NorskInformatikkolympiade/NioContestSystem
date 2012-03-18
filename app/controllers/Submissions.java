@@ -24,6 +24,16 @@ import viewmodels.ScoreboardEntry;
 
 @With(Security.class)
 public class Submissions extends Controller {
+	public static void show(Long id) {
+		Submission submission = Submission.findById(id);
+		if (submission == null)
+			notFound("Det finnes ingen innlevering med id " + id + ".");
+		if (submission.contestant.username.equals(Security.connected()) || Security.getCurrentContestant().isAdmin)
+			render(submission);
+		else
+			forbidden();
+	}
+	
 	public static void submit() {
 		if (Security.getCurrentContestant().isAdmin)
 			forbidden();
