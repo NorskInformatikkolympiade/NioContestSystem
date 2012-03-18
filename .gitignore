@@ -9,3 +9,6 @@ eclipse
 .settings
 modules
 work
+
+obj
+*.suo
