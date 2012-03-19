@@ -15,6 +15,7 @@ import java.util.List;
 
 import models.Contestant;
 import models.Language;
+import models.Setting;
 import models.Submission;
 import models.SubmissionStatus;
 import models.Task;
@@ -47,6 +48,10 @@ public class Submissions extends Controller {
 	public static void handleSubmission(long taskId, String language, File sourceCodeFile) {
 		if (Security.getCurrentContestant().isAdmin) {
 			forbidden();
+			return;
+		}
+		if (!Setting.isContestRunning()) {
+			forbidden("Konkurransen er ikke aktiv nå.");
 			return;
 		}
 		if (!sourceCodeFile.getName().matches("^[a-zA-Z0-9_.]+$")) {
