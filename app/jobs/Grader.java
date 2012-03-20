@@ -20,26 +20,30 @@ import utilities.cmd.ICommandLineExecutor;
 import utilities.cmd.IFileHelper;
 import utilities.compilers.Compilers;
 import utilities.compilers.ICompilers;
+import utilities.grading.IOutputComparator;
+import utilities.grading.OutputComparator;
 
 public class Grader extends Job implements Runnable {
 	private static final Grader instance = new Grader();
 	private final ICompilers compilers;
 	private final ICommandLineExecutor commandLineExecutor;
 	private final IFileHelper fileHelper;
+	private final IOutputComparator outputComparator;
 	private boolean shouldStop;
 	private boolean isRunning;
 	static boolean disableGradingDuringTesting;
 	private final int EXCEPTION_EXIT_CODE = -43;
 	
 	private Grader() {
-		this(Compilers.instance(), new CommandLineExecutor(), new FileHelper());
+		this(Compilers.instance(), new CommandLineExecutor(), new FileHelper(), new OutputComparator());
 	}
 	
 	// For testing only
-	Grader(ICompilers compilers, ICommandLineExecutor commandLineExecutor, IFileHelper fileReader) {
+	Grader(ICompilers compilers, ICommandLineExecutor commandLineExecutor, IFileHelper fileReader, IOutputComparator outputComparator) {
 		this.compilers = compilers;
 		this.commandLineExecutor = commandLineExecutor;
 		this.fileHelper = fileReader;
+		this.outputComparator = outputComparator;
 	}
 	
 	public static Grader getInstance() {
@@ -173,7 +177,7 @@ public class Grader extends Job implements Runnable {
 				return false;
 			}
 			String expectedOutput = fileHelper.readAllAsString(dataSet.getOutputFileName());
-			return runResult.stdOut != null && runResult.stdOut.equals(expectedOutput);
+			return runResult.stdOut != null && outputComparator.compare(expectedOutput, runResult.stdOut);
 		}
 		catch (TimeoutException e) {
 			System.out.println("Timeout: " + e.getMessage());

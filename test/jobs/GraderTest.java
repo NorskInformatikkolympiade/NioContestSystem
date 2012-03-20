@@ -28,6 +28,7 @@ import sun.invoke.util.VerifyAccess;
 import utilities.cmd.ICommandLineExecutor;
 import utilities.cmd.IFileHelper;
 import utilities.compilers.ICompilers;
+import utilities.grading.OutputComparator;
 
 import static org.mockito.Mockito.*;
 
@@ -50,7 +51,7 @@ public class GraderTest extends UnitTest {
 		commandLineMock = mock(ICommandLineExecutor.class);
 		fileHelperMock = mock(IFileHelper.class);
 		when(commandLineMock.execute((String[])anyObject(), (byte[])anyObject(), anyBoolean(), anyBoolean(), anyLong())).thenReturn(new CommandLineResult(0, "", "", 100));
-		grader = new Grader(compilersMock, commandLineMock, fileHelperMock);
+		grader = new Grader(compilersMock, commandLineMock, fileHelperMock, new OutputComparator()); //TODO: Use a mock for IOutputComparator; this will simplify the tests a lot
 		contestant = new Contestant("Ola", "Nordmann", false).save();
 		task = new Task(1, "Heisaturen", 3, "C:/dataSets").save();
 		new DataSet(task, 1, 1).save();
@@ -71,7 +72,7 @@ public class GraderTest extends UnitTest {
 	}
 	
 	@Test
-	public void shouldSetStatusToCompletedButNotInvokeCommandLineExecutorWhenCompilationFailsBecauseOfCodeError() {
+	public void shouldSetStatusToCompilationFailedAndNotInvokeCommandLineExecutorWhenCompilationFailsBecauseOfCodeError() {
 		final Submission submission = new Submission(contestant, task, "int main() { return a; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0, "main.cpp").save();
 		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.CODE_ERROR, "", "", 1000, "main.exe"));
 		flushAndCommit();
@@ -79,12 +80,12 @@ public class GraderTest extends UnitTest {
 		grader.grade(submission);
 		
 		submission.refresh();
-		assertEquals(SubmissionStatus.COMPLETED, submission.status);
+		assertEquals(SubmissionStatus.COMPILATION_FAILED, submission.status);
 		verifyZeroInteractions(commandLineMock);
 	}
 
 	@Test
-	public void shouldSetStatusToCompletedButNotInvokeCommandLineExecutorWhenCompilationFailsBecauseOfInternalError() {
+	public void shouldSetStatusToCompilationFailedAndNotInvokeCommandLineExecutorWhenCompilationFailsBecauseOfInternalError() {
 		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0, "main.cpp").save();
 		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.INTERNAL_ERROR, "", "", 1000, "main.exe"));
 		flushAndCommit();
@@ -92,12 +93,12 @@ public class GraderTest extends UnitTest {
 		grader.grade(submission);
 		
 		submission.refresh();
-		assertEquals(SubmissionStatus.COMPLETED, submission.status);
+		assertEquals(SubmissionStatus.COMPILATION_FAILED, submission.status);
 		verifyZeroInteractions(commandLineMock);
 	}
 	
 	@Test
-	public void shouldSetStatusToCompletedButNotInvokeCommandLineExecutorWhenCompilationFailsBecauseOfTimeout() {
+	public void shouldSetStatusToCompilationFailedAndNotInvokeCommandLineExecutorWhenCompilationFailsBecauseOfTimeout() {
 		final Submission submission = new Submission(contestant, task, "int main() { return 0; }", Language.C, new Date(2010, 1, 1), SubmissionStatus.QUEUED, 0, "main.cpp").save();
 		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.TIMEOUT, "", "", 10000, "main.exe"));
 		flushAndCommit();
@@ -105,7 +106,7 @@ public class GraderTest extends UnitTest {
 		grader.grade(submission);
 		
 		submission.refresh();
-		assertEquals(SubmissionStatus.COMPLETED, submission.status);
+		assertEquals(SubmissionStatus.COMPILATION_FAILED, submission.status);
 		verifyZeroInteractions(commandLineMock);
 	}
 	
