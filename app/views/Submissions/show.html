@@ -24,8 +24,29 @@
 	</tr>
 	<tr>
 		<th>Poeng:</th>
-		<td>${submission.score}</td>
+		<td>${submission.score} (av ${submission.task.weight})</td>
 	</tr>
+</table>
+
+<h3>Kjøring mot datasett</h3>
+<table>
+	<tr>
+		<th>Sett nr.</th>
+		<th>Vekt</th>
+		<th>Resultat</th>
+	</tr>
+	#{list items: submission.runs, as: 'run'}
+		<tr>
+			<td>${run.dataSet.number}</td>
+			<td>${run.dataSet.weight}</td>
+			<td>${run.result.getName()}</td>
+		</tr>
+	#{/list}
+	#{else}
+		<tr>
+			<td colspan="3">(ingen)</td>
+		</tr>
+	#{/else}
 </table>
 
 <h3>Kompilatorfeilmeldinger</h3>
