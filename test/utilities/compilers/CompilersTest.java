@@ -17,7 +17,9 @@ import models.*;
 import models.compilers.CompileResult;
 import models.compilers.CompileStatus;
 
-public class CompilersTest extends FunctionalTest {
+public class CompilersTest extends UnitTest {
+  private final String workingDir = "e:\\Private\\eclipse-workspace\\NioContestSystem\\work";
+  
   private String readAll(BufferedReader input) throws IOException {
     String line = null;
     StringBuffer capture = new StringBuffer();
@@ -38,7 +40,7 @@ public class CompilersTest extends FunctionalTest {
     assertTrue(testProgram.exists());
     BufferedReader br = new BufferedReader(new FileReader(testProgram));
     String program = readAll(br);
-    CompileResult res = Compilers.instance().compile(Language.CPP, program, "/tmp", "test");
+    CompileResult res = Compilers.instance().compile(Language.CPP, program, workingDir, "test");
     assertEquals(CompileStatus.OK, res.status);
     System.out.println("Compile took: " + res.duration + "ms");
   }
@@ -53,7 +55,7 @@ public class CompilersTest extends FunctionalTest {
     assertTrue(testProgram.exists());
     BufferedReader br = new BufferedReader(new FileReader(testProgram));
     String program = readAll(br);
-    CompileResult res = Compilers.instance().compile(Language.CPP, program, "/tmp/", "the awesome executable");
+    CompileResult res = Compilers.instance().compile(Language.CPP, program, workingDir, "the awesome executable");
     assertEquals(CompileStatus.OK, res.status);
     System.out.println("Compile took: " + res.duration + "ms");
   }

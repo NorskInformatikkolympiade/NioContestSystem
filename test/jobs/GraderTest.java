@@ -53,7 +53,9 @@ public class GraderTest extends UnitTest {
 		when(commandLineMock.execute((String[])anyObject(), (byte[])anyObject(), anyBoolean(), anyBoolean(), anyLong())).thenReturn(new CommandLineResult(0, "", "", 100));
 		grader = new Grader(compilersMock, commandLineMock, fileHelperMock, new OutputComparator()); //TODO: Use a mock for IOutputComparator; this will simplify the tests a lot
 		contestant = new Contestant("Ola", "Nordmann", false).save();
-		task = new Task(1, "Heisaturen", 3, "C:/dataSets").save();
+		task = new Task(1, "Heisaturen", 3, "C:/dataSets");
+		task.timeout = 5000;
+		task.save();
 		new DataSet(task, 1, 1).save();
 		new DataSet(task, 2, 1).save();
 		new DataSet(task, 3, 1).save();
@@ -118,7 +120,7 @@ public class GraderTest extends UnitTest {
 			new byte[]{97, 98, 99},
 			new byte[]{105, 102}
 		};
-		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.OK, "", "", 1000, "main.exe"));
+		when(compilersMock.compile(any(Language.class), anyString(), anyString(), anyString())).thenReturn(new CompileResult(CompileStatus.OK, "", "", 1000, "Program.exe"));
 		when(fileHelperMock.readAllBytes("C:/dataSets/1.in")).thenReturn(inputFiles[0]);
 		when(fileHelperMock.readAllBytes("C:/dataSets/2.in")).thenReturn(inputFiles[1]);
 		when(fileHelperMock.readAllBytes("C:/dataSets/3.in")).thenReturn(inputFiles[2]);
@@ -130,9 +132,16 @@ public class GraderTest extends UnitTest {
 		assertEquals(SubmissionStatus.COMPLETED, submission.status);
 		ArgumentCaptor<String[]> stringArrayCaptor = ArgumentCaptor.forClass(String[].class);
 		ArgumentCaptor<byte[]> byteArrayCaptor = ArgumentCaptor.forClass(byte[].class);
-		verify(commandLineMock, times(3)).execute(stringArrayCaptor.capture(), byteArrayCaptor.capture(), eq(true), eq(true), eq(1000L));
+		verify(commandLineMock, times(3)).execute(stringArrayCaptor.capture(), byteArrayCaptor.capture(), eq(true), eq(true), eq(8000L));
 		for (int i = 0; i < 3; ++i) {
-			assertArrayEquals(new String[] {"E:\\Private\\eclipse-workspace\\NioContestSystem\\work\\Program.exe"}, stringArrayCaptor.getAllValues().get(i));
+			assertArrayEquals(new String[] {
+					"e:\\Private\\eclipse-workspace\\NioContestSystem\\ProperRunAs\\bin\\Release\\ProperRunAs.exe", 
+					"e:\\Private\\eclipse-workspace\\NioContestSystem\\work",
+					" ",
+					"Program.exe",
+					"5000"
+				}, 
+				stringArrayCaptor.getAllValues().get(i));
 			assertArrayEquals(inputFiles[i], byteArrayCaptor.getAllValues().get(i));
 		}
 	}
