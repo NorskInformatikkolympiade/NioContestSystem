@@ -13,7 +13,6 @@
 		<th>Språk</th>
 		<th>Status</th>
 		<th>Poeng</th>
-		<th>Kompilatorfeilmeldinger</th>
 	</tr>
 	#{list items: contestant.submissions, as: 'submission'}
 		<tr>
@@ -22,7 +21,6 @@
 			<td>${submission.language.getName()}</td>
 			<td>${submission.status.getName()}</td>
 			<td>${submission.score}</td>
-			<td>${submission.compilationErrors}</td>
 		</tr>
 	#{/list}
 </table>
