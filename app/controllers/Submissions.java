@@ -67,6 +67,12 @@ public class Submissions extends Controller {
 			FileChannel fc = stream.getChannel();
 			MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
 			String sourceCode = Charset.forName("UTF-8").decode(bb).toString();
+			for (char c : sourceCode.toCharArray()) {
+				if ((c < ' ' || c >= 256) && c != '\n' && c != '\r' && c != '\t') {
+					error("Filen du prøver å laste opp inneholder ugyldige tegn. Er du sikker på at det er en kildekodefil?");
+					return;
+				}
+			}
 			Contestant contestant = Contestant.find("byUsername", Security.connected()).first();
 			new Submission(contestant, task, sourceCode, lang, new Date(), SubmissionStatus.QUEUED, 0, sourceCodeFile.getName()).save();
 		}
